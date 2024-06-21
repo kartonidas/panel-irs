@@ -1,0 +1,61 @@
+.card-footer-pagination .pagination,
+.card-footer-pagination p {
+    margin-bottom: 0;
+}
+
+.input-error-info  {
+    color: #ff2323;
+    font-size: 0.75rem;
+}
+
+.table-responsive table TR TH,
+.table-responsive table TR TD{
+    white-space: nowrap;
+}
+
+table THEAD TR TH A {
+    text-decoration: none;
+}
+
+.sort-active.sort-asc::after, .sort-active.sort-desc::after {
+	margin-left: 6px;
+    display: inline-block;
+    font-family: bootstrap-icons!important;
+    font-style: normal;
+    font-weight: 400!important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.sort-active.sort-asc::after {
+	content: "\F574";
+}
+
+.sort-active.sort-desc::after {
+	content: "\F575";
+}
+
+.ck-editor__editable {
+    min-height: 250px !important;
+}
+
+.gallery-single-image {
+    cursor: move;
+}
+
+.card-primary.card-outline-tabs>.card-header a.active, .card-primary.card-outline-tabs>.card-header a.active:hover {
+    border-top: 3px solid #007bff
+}
+
+.inactive-page-row {
+    background: #ededed;
+    opacity: 0.8;
+}
+
+.select2-container {
+    width: 100% !important;
+}
