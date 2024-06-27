@@ -22,8 +22,8 @@
                 <input type="text" name="name" class="form-control" id="filterName" value="{{ $filter["name"] ?? "" }}">
             </div>
             <div class="col">
-                <label for="filterNipRegonKr" class="form-label mb-0">{{ __("NIP/Regon/KR") }}</label>
-                <input type="text" name="nip_regon_kr" class="form-control" id="filterNipRegonKr" value="{{ $filter["nip_regon_kr"] ?? "" }}">
+                <label for="filterNipRegonKrs" class="form-label mb-0">{{ __("NIP/Regon/KRS") }}</label>
+                <input type="text" name="nip_regon_krs" class="form-control" id="filterNipRegonKrs" value="{{ $filter["nip_regon_krs"] ?? "" }}">
             </div>
             <div class="col-auto">
                 <a href="{{ route("office.clear-filter", ["office:customers", "_back" => route("office.customers", [], false) ]) }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
@@ -43,7 +43,7 @@
                             <th>{{ __("Adres") }}</th>
                             <th>{{ __("NIP") }}</th>
                             <th>{{ __("Regon") }}</th>
-                            <th>{{ __("KR") }}</th>
+                            <th>{{ __("KRS") }}</th>
                             <th class="text-center" style="width: 120px">{{ __("Aktywny") }}</th>
                             <th style="width: 120px"></th>
                         </tr>
@@ -65,7 +65,7 @@
                                         {{ $customer->regon }}
                                     </td>
                                     <td class="align-middle">
-                                        {{ $customer->kr }}
+                                        {{ $customer->krs }}
                                     </td>
                                     <td class="align-middle text-center">
                                         @if($customer->active)

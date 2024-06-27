@@ -42,7 +42,7 @@ class CustomerStoreRequest extends FormRequest
             "zip" => ["required", "max:10", "regex:/^[0-9]{2}-[0-9]{3}$/"],
             "nip" => ["required", new Nip],
             "regon" => ["required", new Regon],
-            "kr" => ["required"],
+            "krs" => ["required"],
             "active" => ["sometimes", "boolean"],
             "case_numbers" => ["sometimes", "array"],
         ];
@@ -67,7 +67,7 @@ class CustomerStoreRequest extends FormRequest
             "zip.regex" => __("Nieprawidłowy format kodu pocztowego"),
             "nip.required" => __("Uzupełnij NIP"),
             "regon.required" => __("Uzupełnij REGON"),
-            "kr.required" => __("Uzupełnij KR"),
+            "krs.required" => __("Uzupełnij KRS"),
             "case_numbers.required" => __("Uzupełnij oznaczenia numerów spraw"),
             "case_numbers.array" => __("Nieprawidłowa wartość w polu oznaczenie numerów spraw"),
         ];

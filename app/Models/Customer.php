@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\User;
 use App\Models\CustomerCaseNumber;
 use App\Models\CustomerSftp;
+use App\Models\CustomerVisibilityField;
 use App\Observers\CustomerObserver;
 
 #[ObservedBy([CustomerObserver::class])]
@@ -84,5 +85,36 @@ class Customer extends Model
             $config->save();
         }
         return $config;
+    }
+    
+    public function saveVisibilityFields($data)
+    {
+        $usedSections = [];
+        foreach($data as $section => $fields)
+        {
+            $visibilityRow = CustomerVisibilityField::where("customer_id", $this->id)->where("section", $section)->first();
+            if(!$visibilityRow)
+            {
+                $visibilityRow = new CustomerVisibilityField;
+                $visibilityRow->customer_id = $this->id;
+                $visibilityRow->section = $section;
+            }
+            $visibilityRow->fields = implode(",", $fields);
+            $visibilityRow->save();
+            
+            $usedSections[] = $section;
+        }
+        
+        CustomerVisibilityField::where("customer_id", $this->id)->whereNotIn("section", $usedSections)->delete();
+    }
+    
+    public function getVisibilityFields()
+    {
+        $visibilityFields = [];
+        $visibilityRows = CustomerVisibilityField::where("customer_id", $this->id)->get();
+        foreach($visibilityRows as $visibilityRow)
+            $visibilityFields[$visibilityRow->section] = explode(",", $visibilityRow->fields);
+        
+        return $visibilityFields;
     }
 }

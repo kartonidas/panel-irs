@@ -12,6 +12,12 @@ class AuthOffice
     	if(!Auth::guard("office")->check())
 			return redirect()->route("office.login");
 
+        if(Auth::guard("office")->user()->block)
+        {
+            Auth::guard("office")->logout();
+            return redirect()->route("office");
+        }
+            
         return $next($request);
     }
 }

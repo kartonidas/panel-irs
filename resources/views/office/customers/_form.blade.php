@@ -12,8 +12,8 @@
     </div>
         
     <div class="col-12 col-md-4 mb-3">
-        <label for="krs" class="form-label">{{ __("KR") }}*</label>
-        <input type="text" name="kr" class="form-control" id="kr" value="{{ $form["kr"] ?? "" }}" data-validate="required">
+        <label for="krs" class="form-label">{{ __("KRS") }}*</label>
+        <input type="text" name="krs" class="form-control" id="krs" value="{{ $form["krs"] ?? "" }}" data-validate="required">
         <small class="input-error-info"></small>
     </div>
     

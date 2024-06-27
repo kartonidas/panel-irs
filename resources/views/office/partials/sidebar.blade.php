@@ -14,8 +14,15 @@
                 </a>
             </li>
         @endif
-        @if(\App\Models\OfficeUser::checkAccess("users:list", false) || \App\Models\OfficeUser::checkAccess("permissions:list", false))
+        @if(\App\Models\OfficeUser::checkAccess("users:list", false) || \App\Models\OfficeUser::checkAccess("permissions:list", false) || \App\Models\OfficeUser::checkAccess("dictionaries:list", false))
             <li class="nav-header">{{ __("ADMINISTRACJA") }}</li>
+            @if(\App\Models\OfficeUser::checkAccess("dictionaries:list", false))
+                <li class="nav-item">
+                    <a href="{{ route("office.dictionaries") }}" class="nav-link @if(($activeMenuItem ?? "") == "dictionaries"){{ "active" }}@endif"> <i class="nav-icon bi bi-folder"></i>
+                        <p>{{ __("Słowniki") }}</p>
+                    </a>
+                </li>
+            @endif
             @if(\App\Models\OfficeUser::checkAccess("users:list", false))
                 <li class="nav-item">
                     <a href="{{ route("office.users") }}" class="nav-link @if(($activeMenuItem ?? "") == "users"){{ "active" }}@endif"> <i class="nav-icon bi bi-person-plus"></i>

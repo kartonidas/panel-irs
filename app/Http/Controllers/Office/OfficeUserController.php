@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Office\OfficeUserStoreRequest;
 use App\Http\Requests\Office\OfficeUserUpdateRequest;
 use App\Http\Requests\Office\ProfileUpdateRequest;
+use App\Libraries\Data;
 use App\Libraries\Helper;
 use App\Models\OfficeUser;
 use App\Models\OfficePermission;
@@ -31,6 +32,13 @@ class OfficeUserController extends Controller
             $rows->where("name", "LIKE", "%" . $filter["name"] . "%");
         if(!empty($filter["email"]))
             $rows->where("email", "LIKE", "%" . $filter["email"] . "%");
+        if(isset($filter["block"]))
+        {
+            if($filter["block"] == "1")
+                $rows->where("block", 1);
+            elseif($filter["block"] == "0")
+                $rows->where("block", 0);
+        }
 
         $rows = $rows->paginate(config("office.lists.size"));
 
@@ -188,5 +196,40 @@ class OfficeUserController extends Controller
         Helper::setMessage("office:adminprofile", __("Profil został zaktualizowany"));
         return redirect()->route("office.profile");
     }
-
+    
+    public function userBlockAccount(Request $request, $id)
+    {
+        OfficeUser::checkAccess("users:update");
+        $row = OfficeUser::find($id);
+        if(!$row)
+            return redirect()->route("office.users")->withErrors(["msg" => __("Pracownik nie istnieje")]);
+        
+        if($row->block)
+            return redirect()->route("office.users")->withErrors(["msg" => __("Wybrane konto aktualnie jest zablokowane")]);
+        
+        $row->block = 1;
+        $row->block_reason = Data::USER_BLOCK_REASON_ADMIN;
+        $row->save();
+        
+        Helper::setMessage("office:users", __("Konto zostało zablokowane"));
+        return redirect()->route("office.users");
+    }
+    
+    public function userUnblockAccount(Request $request, $id)
+    {
+        OfficeUser::checkAccess("users:update");
+        $row = OfficeUser::find($id);
+        if(!$row)
+            return redirect()->route("office.users")->withErrors(["msg" => __("Pracownik nie istnieje")]);
+        
+        if(!$row->block)
+            return redirect()->route("office.users")->withErrors(["msg" => __("Wybrane konto nie jest aktualnie zablokowane")]);
+        
+        $row->block = 0;
+        $row->block_reason = null;
+        $row->save();
+        
+        Helper::setMessage("office:users", __("Konto zostało odblokowane"));
+        return redirect()->route("office.users");
+    }
 }

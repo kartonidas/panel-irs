@@ -23,6 +23,10 @@ return [
                 "module" => "Pracownicy",
                 "operation" => ["list", "create", "update", "delete"]
             ],
+            "dictionaries" => [
+                "module" => "Słowniki",
+                "operation" => ["list", "create", "update", "delete"]
+            ],
         ],
         "employee" => [
             "invoicess" => [

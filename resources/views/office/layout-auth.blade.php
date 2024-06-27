@@ -138,5 +138,7 @@
                 });
             }
         });
+        
+        App.setLoginActivityInterval("{{ route("office.check-activity", [], false) }}");
     </script>
 </html>

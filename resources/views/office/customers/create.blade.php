@@ -1,6 +1,6 @@
 @extends("office.layout-auth")
 
-@section("title"){{ "Nowa klient" }}@endsection
+@section("title"){{ "Nowy klient" }}@endsection
 @section("breadcrumbs")
     <li class="breadcrumb-item" aria-current="page"><a href="{{ route("office.customers") }}">{{ __("Klienci") }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ __("Nowy klient") }}</li>

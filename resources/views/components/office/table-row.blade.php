@@ -2,5 +2,15 @@
     <div class="text-muted">
         <small>{{ __($label) }}:</small>
     </div>
-    <div class="fs-6">{!! $value !!}</div>
+    <div class="fs-6">
+        @if($yesNo())
+            @if($value)
+                {{ __("TAK") }}
+            @else
+                {{ __("NIE") }}
+            @endif
+        @else
+            {!! $value !!}
+        @endif
+    </div>
 </div>

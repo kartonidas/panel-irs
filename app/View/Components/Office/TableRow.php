@@ -12,8 +12,9 @@ class TableRow extends Component
      */
     public function __construct(
         public string $label,
-        public string $value,
+        public string|null $value,
         public bool $border = true,
+        public bool $yesNo = false,
     ) {}
  
     public function render(): View
@@ -24,5 +25,10 @@ class TableRow extends Component
     public function hasBorder()
     {
         return $this->border;
+    }
+    
+    public function yesNo()
+    {
+        return $this->yesNo;
     }
 }

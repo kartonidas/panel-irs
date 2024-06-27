@@ -12,6 +12,12 @@ class AuthPanel
     	if(!Auth::check())
 			return redirect()->route("login");
 
+        if(Auth::user()->block)
+        {
+            Auth::logout();
+            return redirect()->route("login");
+        }
+            
         return $next($request);
     }
 }

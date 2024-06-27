@@ -1,5 +1,6 @@
 App =
 {
+    loginActivityInterval : null,
     init : function()
     {
         if ($(".datepicker").length) {
@@ -74,7 +75,7 @@ App =
     valid : function($this) {
         var hasError = false;
         $this.find("*[data-validate]").each(function() {
-            if(!$(this).is(":visible") && !$(this).attr("data-force-validate"))
+            if((!$(this).is(":visible") && !$(this).attr("data-force-validate")) || $(this).attr("disabled"))
                 return true;
 
             if($(this).is("input[type='radio'],input[type='checkbox']")) {
@@ -200,10 +201,35 @@ App =
         var toast = new bootstrap.Toast($("#toast-message")[0]);
         toast.show();
     },
+    
+    setLoginActivityInterval : function(url) {
+        App.loginActivityInterval = setInterval(function() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url : url,
+                type: "post",
+                dataType: "json",
+                success: function(ret) {
+                    if (!ret.status) {
+                        if (/\/?kancelaria(\/(.*))?/.test(window.location.pathname))
+                            window.location.reload();
+                        clearInterval(App.loginActivityInterval);
+                    }
+                }
+            });
+        }, 30000);
+    }
 }
 
 $(document).ready(function(){
     App.init();
     App.validForm();
     App.select2Init();
+    
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
 });

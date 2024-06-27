@@ -14,6 +14,8 @@ use App\Http\Requests\Office\CustomerStoreRequest;
 use App\Http\Requests\Office\CustomerUpdateRequest;
 use App\Http\Requests\Office\CustomerUserStoreRequest;
 use App\Http\Requests\Office\CustomerUserUpdateRequest;
+use App\Http\Requests\Office\CustomerVisibilityFieldsRequest;
+use App\Libraries\Data;
 use App\Libraries\Helper;
 use App\Models\Customer;
 use App\Models\OfficeUser;
@@ -34,12 +36,12 @@ class CustomerController
         $customers = Customer::orderBy("name", "ASC");
         if(!empty($filter["name"]))
             $customers->searchName($filter["name"]);
-        if(!empty($filter["nip_regon_kr"]))
+        if(!empty($filter["nip_regon_krs"]))
         {
             $customers->where(function($q) use($filter) {
-                $q->where("nip", "LIKE", "%" . $filter["nip_regon_kr"] . "%");
-                $q->orWhere("regon", "LIKE", "%" . $filter["nip_regon_kr"] . "%");
-                $q->orWhere("kr", "LIKE", "%" . $filter["nip_regon_kr"] . "%");
+                $q->where("nip", "LIKE", "%" . $filter["nip_regon_krs"] . "%");
+                $q->orWhere("regon", "LIKE", "%" . $filter["nip_regon_krs"] . "%");
+                $q->orWhere("krs", "LIKE", "%" . $filter["nip_regon_krs"] . "%");
             });
         }
         
@@ -83,7 +85,7 @@ class CustomerController
             $customer->zip = $validated["zip"];
             $customer->nip = $validated["nip"];
             $customer->regon = $validated["regon"];
-            $customer->kr = $validated["kr"];
+            $customer->krs = $validated["krs"];
             $customer->active = !empty($validated["active"]) ? 1 : 0;
             $customer->save();
             
@@ -139,7 +141,7 @@ class CustomerController
             $customer->zip = $validated["zip"];
             $customer->nip = $validated["nip"];
             $customer->regon = $validated["regon"];
-            $customer->kr = $validated["kr"];
+            $customer->krs = $validated["krs"];
             $customer->active = !empty($validated["active"]) ? 1 : 0;
             $customer->save();
             
@@ -164,6 +166,8 @@ class CustomerController
         
         $vData = [
             "customer" => $customer,
+            "customerVisibilityFields" => $customer->getVisibilityFields(),
+            "fieldsVisibility" => Data::getFieldsVisibility(),
             "users" => $customer->users()->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get(),
             "sftp" => $customer->sftp()->first(),
         ];
@@ -299,6 +303,52 @@ class CustomerController
         return redirect()->route("office.customer.show", $customerId);
     }
     
+    public function customerUserBlockAccount(Request $request, $customerId, $id)
+    {
+        OfficeUser::checkAccess("customers:update");
+        
+        $customer = Customer::find($customerId);
+        if(!$customer)
+            return redirect()->route("ofice.customers")->withErrors(["msg" => __("Klient nie istnieje")]);
+        
+        $user = User::find($id);
+        if(!$user)
+            return redirect()->route("ofice.customer.show", $customerId)->withErrors(["msg" => __("Konto nie istnieje")]);
+        
+        if($user->block)
+            return redirect()->route("ofice.customer.show", $customerId)->withErrors(["msg" => __("Konto aktualnie jest zablokowane")]);
+        
+        $user->block = 1;
+        $user->block_reason = Data::USER_BLOCK_REASON_ADMIN;
+        $user->save();
+        
+        Helper::setMessage("office:customers", __("Konto zostało zablokowane"));
+        return redirect()->route("office.customer.show", $customerId);
+    }
+    
+    public function customerUserUnblockAccount(Request $request, $customerId, $id)
+    {
+        OfficeUser::checkAccess("customers:update");
+        
+        $customer = Customer::find($customerId);
+        if(!$customer)
+            return redirect()->route("ofice.customers")->withErrors(["msg" => __("Klient nie istnieje")]);
+        
+        $user = User::find($id);
+        if(!$user)
+            return redirect()->route("ofice.customer.show", $customerId)->withErrors(["msg" => __("Konto nie istnieje")]);
+        
+        if(!$user->block)
+            return redirect()->route("ofice.customer.show", $customerId)->withErrors(["msg" => __("Konto nie jest aktualnie zablokowane")]);
+        
+        $user->block = 0;
+        $user->block_reason = null;
+        $user->save();
+        
+        Helper::setMessage("office:customers", __("Konto zostało odblokowane"));
+        return redirect()->route("office.customer.show", $customerId);
+    }
+    
     public function customerSftp(Request $request, $id)
     {
         OfficeUser::checkAccess("customers:update");
@@ -309,13 +359,6 @@ class CustomerController
             return redirect()->route("ofice.customers")->withErrors(["msg" => __("Klient nie istnieje")]);
         
         $config = $customer->sftp()->first();
-        
-        //if(!empty($config->password))
-        //{
-        //    try {
-        //        $config->password = $decrypted = Crypt::decryptString($config->password);
-        //    } catch (DecryptException $e) {}
-        //}
         
         $vData = [
             "id" => $id,
@@ -350,5 +393,36 @@ class CustomerController
         
         Helper::setMessage("office:customers", __("Konfiguracja została zapisana"));
         return redirect()->route("office.customer.sftp", $id);
+    }
+    
+    public function customerVisibilityElements(Request $request, $id)
+    {
+        OfficeUser::checkAccess("customers:update");
+        
+        $customer = Customer::find($id);
+        if(!$customer)
+            return redirect()->route("ofice.customers")->withErrors(["msg" => __("Klient nie istnieje")]);
+        
+        $vData = [
+            "customer" => $customer,
+            "fieldsVisibility" => Data::getFieldsVisibility(),
+            "customerVisibilityFields" => $customer->getVisibilityFields(),
+        ];
+        return view("office.customers.visibility-elements", $vData);
+    }
+    
+    public function customerVisibilityElementsPost(CustomerVisibilityFieldsRequest $request, $id)
+    {
+         OfficeUser::checkAccess("customers:update");
+        
+        $customer = Customer::find($id);
+        if(!$customer)
+            return redirect()->route("ofice.customers")->withErrors(["msg" => __("Klient nie istnieje")]);
+        
+        $validated = $request->validated();
+        $customer->saveVisibilityFields($validated["visibility"] ?? []);
+        
+        Helper::setMessage("office:customers", __("Konfiguracja została zapisana"));
+        return redirect()->route("office.customer.visibility-elements", $id);
     }
 }
