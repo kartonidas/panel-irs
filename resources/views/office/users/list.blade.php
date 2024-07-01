@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form method="GET" action="{{ route("office.filter", "office:users") }}" class="mb-4">
+    <form method="GET" action="{{ route("office.users.filter") }}" class="mb-4">
         <div class="row mb-2 g-3 align-items-end">
             <div class="col">
                 <label for="filterEmail" class="form-label mb-0">{{ __("Adres e-mail") }}</label>
@@ -34,11 +34,10 @@
                 </select>
             </div>
             <div class="col-auto">
-                <a href="{{ route("office.clear-filter", ["office:users", "_back" => route("office.users", [], false) ]) }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+                <a href="{{ route("office.users.filter.clear") }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
                 <button type="submit" class="btn btn-secondary">{{ __("Szukaj") }}</button>
             </div>
         </div>
-        <input type="hidden" name="_back" value="{{ route("office.users") }}">
     </form>
 
     <div class="card mb-4">
@@ -47,10 +46,26 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>{{ __("Adres e-mail") }}</th>
-                            <th>{{ __("Nazwa") }}</th>
-                            <th class="text-center" style="width: 120px">{{ __("Aktywny") }}</th>
-                            <th class="text-center" style="width: 150px">{{ __("Zablokowane") }}</th>
+                            <th>
+                                <a href="{{ route("office.users.sort", ["sort" => $sortColumns["email"]]) }}" class="{{ $sortColumns["class.email"] }}">
+                                    {{ __("Adres e-mail") }}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ route("office.users.sort", ["sort" => $sortColumns["name"]]) }}" class="{{ $sortColumns["class.name"] }}">
+                                    {{ __("Nazwa") }}
+                                </a>
+                            </th>
+                            <th class="text-center" style="width: 120px">
+                                <a href="{{ route("office.users.sort", ["sort" => $sortColumns["active"]]) }}" class="{{ $sortColumns["class.active"] }}">
+                                    {{ __("Aktywny") }}
+                                </a>
+                            </th>
+                            <th class="text-center" style="width: 150px">
+                                <a href="{{ route("office.users.sort", ["sort" => $sortColumns["block"]]) }}" class="{{ $sortColumns["class.block"] }}">
+                                    {{ __("Zablokowane") }}
+                                </a>
+                            </th>
                             <th style="width: 120px"></th>
                         </tr>
                     </thead>

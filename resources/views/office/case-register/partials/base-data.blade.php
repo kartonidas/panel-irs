@@ -1,4 +1,4 @@
-<div class="p-3 border-start border-bottom border-end">
+<div class="pt-3">
     <div class="card card-primary card-outline mb-4">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-end">

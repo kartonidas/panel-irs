@@ -21,7 +21,11 @@
                 <table class="table table-striped">
                     <thead class="table-light">
                         <tr>
-                            <th>{{ __("Nazwa grupy") }}</th>
+                            <th>
+                                <a href="{{ route("office.permissions.sort", ["sort" => $sortColumns["name"]]) }}" class="{{ $sortColumns["class.name"] }}">
+                                    {{ __("Nazwa grupy") }}
+                                </a>
+                            </th>
                             <th style="width: 200px">{{ __("Rola") }}</th>
                             <th style="width: 120px"></th>
                         </tr>

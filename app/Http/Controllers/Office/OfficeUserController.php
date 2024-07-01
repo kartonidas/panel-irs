@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Office;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Office\OfficeUserStoreRequest;
 use App\Http\Requests\Office\OfficeUserUpdateRequest;
 use App\Http\Requests\Office\ProfileUpdateRequest;
@@ -20,14 +20,20 @@ class OfficeUserController extends Controller
 {
     use Form;
     
+    protected function modelName() : string
+    {
+        return OfficeUser::class;
+    }
+    
     public function list(Request $request)
     {
         OfficeUser::checkAccess("users:list");
         view()->share("activeMenuItem", "users");
         
-        $filter = Helper::getFilter($request, "office:users");
+        $sort = $this->getSortOrder($request);
+        $filter = $this->getFilter($request);
 
-        $rows = OfficeUser::orderBy("name", "ASC");
+        $rows = OfficeUser::orderBy($sort[0], $sort[1]);
         if(!empty($filter["name"]))
             $rows->where("name", "LIKE", "%" . $filter["name"] . "%");
         if(!empty($filter["email"]))
@@ -45,7 +51,9 @@ class OfficeUserController extends Controller
         $vData = [
             "users" => $rows,
             "filter" => $filter,
-            "permissions" => OfficePermission::pluck("name", "id")->all()
+            "permissions" => OfficePermission::pluck("name", "id")->all(),
+            "sort" => $sort,
+            "sortColumns" => $this->getSortableFields($sort),
         ];
         return view("office.users.list", $vData);
     }

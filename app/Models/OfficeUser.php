@@ -30,6 +30,10 @@ class OfficeUser extends Authenticatable
         'password',
     ];
     
+    public static $sortable = ["email", "name", "active", "block"];
+    public static $defaultSortable = ["name", "asc"];
+    public static $filter = ["email", "name", "block"];
+    
     protected function casts(): array
     {
         return [

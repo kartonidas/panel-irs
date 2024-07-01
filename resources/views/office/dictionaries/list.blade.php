@@ -15,7 +15,7 @@
         </div>
     @endif
     
-    <form method="GET" action="{{ route("office.filter", "office:dictionaries") }}" class="mb-4">
+    <form method="GET" action="{{ route("office.dictionaries.filter") }}" class="mb-4">
         <div class="row mb-2 g-3 align-items-end">
             <div class="col">
                 <label for="filterType" class="form-label mb-0">{{ __("Rodzaj") }}</label>
@@ -27,11 +27,10 @@
                 </select>
             </div>
             <div class="col-auto">
-                <a href="{{ route("office.clear-filter", ["office:dictionaries", "_back" => route("office.dictionaries", [], false) ]) }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+                <a href="{{ route("office.dictionaries.filter.clear") }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
                 <button type="submit" class="btn btn-secondary">{{ __("Szukaj") }}</button>
             </div>
         </div>
-        <input type="hidden" name="_back" value="{{ route("office.customers") }}">
     </form>
     
     <div class="card mb-4">

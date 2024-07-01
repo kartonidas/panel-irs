@@ -13,7 +13,7 @@
         <a href="{{ route("office.case_register.create") }}" class="btn btn-primary btn-icon"><i class="bi bi-plus-lg"></i> {{ __("Dodaj") }}</a>
     </div>
     
-    <form method="GET" action="{{ route("office.filter", "office:case_register") }}" class="mb-4">
+    <form method="GET" action="{{ route("office.case_register.filter") }}" class="mb-4">
         <div class="row mb-2 g-3 align-items-end">
             <div class="col">
                 <label for="filterCustomerSignature" class="form-label mb-0">{{ __("Oznaczenie klienta") }}</label>
@@ -24,22 +24,36 @@
                 <input type="text" name="rs_signature" class="form-control" id="filterRsSignature" value="{{ $filter["rs_signature"] ?? "" }}">
             </div>
             <div class="col-auto">
-                <a href="{{ route("office.clear-filter", ["office:case_register", "_back" => route("office.case_register", [], false) ]) }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+                <a href="{{ route("office.case_register.filter.clear") }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
                 <button type="submit" class="btn btn-secondary">{{ __("Szukaj") }}</button>
             </div>
         </div>
-        <input type="hidden" name="_back" value="{{ route("office.case_register") }}">
     </form>
         
     <div class="card mb-4">
         <div class="card-body p-0">
+            <div class="d-flex align-items-center justify-content-end mt-3 mb-1 me-3">
+                @include("office.partials.pagination-size", ["currentSize" => $size, "route" => "office.case_register.size"])
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>{{ __("Oznaczenie klienta") }}</th>
-                            <th>{{ __("Oznaczenie RS") }}</th>
-                            <th>{{ __("Dane przeciwnika") }}</th>
+                            <th>
+                                <a href="{{ route("office.case_register.sort", ["sort" => $sortColumns["customer_signature"]]) }}" class="{{ $sortColumns["class.customer_signature"] }}">
+                                    {{ __("Oznaczenie klienta") }}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ route("office.case_register.sort", ["sort" => $sortColumns["rs_signature"]]) }}" class="{{ $sortColumns["class.rs_signature"] }}">
+                                    {{ __("Oznaczenie RS") }}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ route("office.case_register.sort", ["sort" => $sortColumns["opponent"]]) }}" class="{{ $sortColumns["class.opponent"] }}">
+                                    {{ __("Dane przeciwnika") }}
+                                </a>
+                            </th>
                             <th style="width: 120px"></th>
                         </tr>
                     </thead>

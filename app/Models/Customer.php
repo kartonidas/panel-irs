@@ -17,6 +17,10 @@ use App\Observers\CustomerObserver;
 #[ObservedBy([CustomerObserver::class])]
 class Customer extends Model
 {
+    public static $sortable = ["name", "nip", "regon", "krs", "active"];
+    public static $defaultSortable = ["name", "asc"];
+    public static $filter = [ "name", "nip_regon_krs"];
+    
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

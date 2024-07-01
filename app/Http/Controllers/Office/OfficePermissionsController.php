@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Office;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Office\PermissionStoreRequest;
 use App\Http\Requests\Office\PermissionUpdateRequest;
 use App\Libraries\Helper;
@@ -15,13 +15,21 @@ class OfficePermissionsController extends Controller
 {
     use Form;
 
+    protected function modelName() : string
+    {
+        return OfficePermission::class;
+    }
+    
     public function list(Request $request)
     {
     	OfficeUser::checkAccess("permissions:list");
         view()->share("activeMenuItem", "permissions");
 
+        $sort = $this->getSortOrder($request);
+        
         $vData = [
-            "permissions" => OfficePermission::orderBy("role", "ASC")->orderBy("name", "ASC")->paginate(config("office.lists.size")),
+            "permissions" => OfficePermission::orderBy($sort[0], $sort[1])->paginate(config("office.lists.size")),
+            "sortColumns" => $this->getSortableFields($sort),
         ];
 
         return view("office.permissions.list", $vData);

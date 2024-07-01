@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Office\DictionaryStoreRequest;
 use App\Http\Requests\Office\DictionaryUpdateRequest;
 use App\Libraries\Helper;
@@ -14,16 +15,21 @@ use App\Models\Dictionary;
 use App\Models\OfficeUser;
 use App\Traits\Form;
 
-class DictionaryController
+class DictionaryController extends Controller
 {
     use Form;
+    
+    protected function modelName() : string
+    {
+        return Dictionary::class;
+    }
     
     public function list(Request $request)
     {
         OfficeUser::checkAccess("dictionaries:list");
         view()->share("activeMenuItem", "dictionaries");
         
-        $filter = Helper::getFilter($request, "office:dictionaries");
+        $filter = $this->getFilter($request);
         
         $dictionaries = Dictionary::orderBy("type", "ASC")->orderBy("value", "ASC");
         if(!empty($filter["type"]))

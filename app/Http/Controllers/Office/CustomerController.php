@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash; 
 use Illuminate\View\View;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Office\CustomerSftpRequest;
 use App\Http\Requests\Office\CustomerStoreRequest;
 use App\Http\Requests\Office\CustomerUpdateRequest;
@@ -22,18 +23,24 @@ use App\Models\OfficeUser;
 use App\Models\User;
 use App\Traits\Form;
 
-class CustomerController
+class CustomerController extends Controller
 {
     use Form;
+    
+    protected function modelName() : string
+    {
+        return Customer::class;
+    }
     
     public function list(Request $request)
     {
         OfficeUser::checkAccess("customers:list");
         view()->share("activeMenuItem", "customers");
         
-        $filter = Helper::getFilter($request, "office:customers");
+        $filter = $this->getFilter($request);
+        $sort = $this->getSortOrder($request);
         
-        $customers = Customer::orderBy("name", "ASC");
+        $customers = Customer::orderBy($sort[0], $sort[1]);
         if(!empty($filter["name"]))
             $customers->searchName($filter["name"]);
         if(!empty($filter["nip_regon_krs"]))
@@ -50,6 +57,8 @@ class CustomerController
         $vData = [
             "filter" => $filter,
             "customers" => $customers,
+            "sort" => $sort,
+            "sortColumns" => $this->getSortableFields($sort),
         ];
         return view("office.customers.list", $vData);
     }

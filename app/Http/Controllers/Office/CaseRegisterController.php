@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; 
 use Illuminate\View\View;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Office\CaseStoreRequest;
 use App\Http\Requests\Office\CaseUpdateRequest;
 use App\Libraries\Helper;
@@ -13,15 +14,21 @@ use App\Models\CaseRegistry;
 use App\Models\Dictionary;
 use App\Traits\Form;
 
-class CaseRegisterController
+class CaseRegisterController extends Controller
 {
     use Form;
+    
+    protected function modelName() : string
+    {
+        return CaseRegistry::class;
+    }
     
     public function list(Request $request)
     {
         view()->share("activeMenuItem", "case_register");
         
-        $filter = Helper::getFilter($request, "office:case_register");
+        $filter = $this->getFilter($request);
+        $sort = $this->getSortOrder($request);
         
         $cases = CaseRegistry::orderBy("id", "DESC");
         if(!empty($filter["customer_signature"]))
@@ -29,11 +36,14 @@ class CaseRegisterController
         if(!empty($filter["rs_signature"]))
             $cases->where("rs_signature", "LIKE", "%" .$filter["rs_signature"] . "%");
             
-        $cases = $cases->paginate(config("office.lists.size"));
+        $cases = $cases->paginate($this->getPageSize($request));
         
         $vData = [
             "cases" => $cases,
             "filter" => $filter,
+            "sort" => $sort,
+            "sortColumns" => $this->getSortableFields($sort),
+            "size" => $this->getPageSize($request)
         ];
         
         return view("office.case-register.list", $vData);

@@ -13,6 +13,9 @@ class OfficePermission extends Model
     public const ADMIN_PERMISSION_TYPE_FULL = "full";
     public const ADMIN_PERMISSION_TYPE_SELECTED = "selected";
     
+    public static $sortable = ["name"];
+    public static $defaultSortable = ["name", "asc"];
+    
     public static function getRoles()
     {
         return [

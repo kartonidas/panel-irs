@@ -15,7 +15,7 @@
         </div>
     @endif
     
-    <form method="GET" action="{{ route("office.filter", "office:customers") }}" class="mb-4">
+    <form method="GET" action="{{ route("office.customers.filter") }}" class="mb-4">
         <div class="row mb-2 g-3 align-items-end">
             <div class="col">
                 <label for="filterName" class="form-label mb-0">{{ __("Nazwa") }}</label>
@@ -26,11 +26,10 @@
                 <input type="text" name="nip_regon_krs" class="form-control" id="filterNipRegonKrs" value="{{ $filter["nip_regon_krs"] ?? "" }}">
             </div>
             <div class="col-auto">
-                <a href="{{ route("office.clear-filter", ["office:customers", "_back" => route("office.customers", [], false) ]) }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+                <a href="{{ route("office.customers.filter.clear") }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
                 <button type="submit" class="btn btn-secondary">{{ __("Szukaj") }}</button>
             </div>
         </div>
-        <input type="hidden" name="_back" value="{{ route("office.customers") }}">
     </form>
         
     <div class="card mb-4">
@@ -39,12 +38,32 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>{{ __("Nazwa") }}</th>
+                            <th>
+                                <a href="{{ route("office.customers.sort", ["sort" => $sortColumns["name"]]) }}" class="{{ $sortColumns["class.name"] }}">
+                                    {{ __("Nazwa") }}
+                                </a>
+                            </th>
                             <th>{{ __("Adres") }}</th>
-                            <th>{{ __("NIP") }}</th>
-                            <th>{{ __("Regon") }}</th>
-                            <th>{{ __("KRS") }}</th>
-                            <th class="text-center" style="width: 120px">{{ __("Aktywny") }}</th>
+                            <th>
+                                <a href="{{ route("office.customers.sort", ["sort" => $sortColumns["nip"]]) }}" class="{{ $sortColumns["class.nip"] }}">
+                                    {{ __("NIP") }}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ route("office.customers.sort", ["sort" => $sortColumns["regon"]]) }}" class="{{ $sortColumns["class.regon"] }}">
+                                    {{ __("Regon") }}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="{{ route("office.customers.sort", ["sort" => $sortColumns["krs"]]) }}" class="{{ $sortColumns["class.krs"] }}">
+                                    {{ __("KRS") }}
+                                </a>
+                            </th>
+                            <th class="text-center" style="width: 120px">
+                                <a href="{{ route("office.customers.sort", ["sort" => $sortColumns["active"]]) }}" class="{{ $sortColumns["class.active"] }}">
+                                    {{ __("Aktywny") }}
+                                </a>
+                            </th>
                             <th style="width: 120px"></th>
                         </tr>
                     </thead>

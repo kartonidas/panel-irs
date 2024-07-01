@@ -11,6 +11,8 @@ use App\Observers\DictionaryObserver;
 #[ObservedBy([DictionaryObserver::class])]
 class Dictionary extends Model
 {
+    public static $filter = ["type"];
+    
     public function canDelete()
     {
         return true;
