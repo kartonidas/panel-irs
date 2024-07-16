@@ -1,53 +1,8 @@
 Modal = {
-    getModalFormData : function(form, fieldPrefix) {
-        var index = $("input[name='" + fieldPrefix + "[id]']", form).val();
-        if(!index)
-            index = "NEW_" + Math.floor(Date.now() / 1000);
-
-        var inputFields = new Array(
-            "input[name^='" + fieldPrefix + "[']",
-            "select[name^='" + fieldPrefix + "[']",
-            "textarea[name^='" + fieldPrefix + "[']"
-        );
-
-        var data = {};
-        var regExp = /\[([^)]+)(\[\])?\]/;
-        form.find(inputFields.join(",")).each(function() {
-            var fieldName = $(this).attr("name")
-            isArray = false;
-            if(fieldName.substr(-2) == "[]") {
-                isArray = true;
-                fieldName = fieldName.slice(0, -2);
-            }
-
-            var matches = regExp.exec(fieldName);
-
-            if(isArray) {
-                if(data[matches[1]] == undefined)
-                    data[matches[1]] = {};
-
-                if($(this).attr("type") != undefined && $(this).attr("type") == "checkbox") {
-                    if($(this).is(":checked"))
-                        data[matches[1]][$(this).val()] = 1;
-                }
-                else
-                    data[matches[1]][Object.keys(data[matches[1]]).length] = $(this).val();
-            } else {
-                if($(this).attr("type") != undefined && $(this).attr("type") == "checkbox")
-                    data[matches[1]] = $(this).is(":checked") ? 1 : 0;
-                else
-                    data[matches[1]] = $(this).val();
-            }
-        });
-        data.id = index;
-        return data;
-    },
-
     onModalShowEvent : function(obj) {
-        var id = obj.attr("data-edit");
-        var type = obj.attr("data-type");
+        var id = obj.attr("data-id");
         var target = obj.attr("data-modal");
-        var object = obj.attr("data-object");
+        var url = obj.attr("data-url");
         var callback = obj.attr("data-callback");
 
         App.preventFormSubmit(target);
@@ -64,44 +19,44 @@ Modal = {
             $(".modal-title .header-edit", target).hide();
         }
 
-        $(target).find("*[name^='" + type + "[']:not([type=checkbox])").val("");
-        $(target).find("*[name^='" + type + "[']:is([type=checkbox])").prop("checked", false);
+        $("FORM", target).find("INPUT:not([type=checkbox]),SELECT,TEXTAREA").val("");
+        $("FORM", target).find("INPUT:is([type=checkbox])").prop("checked", false);
 
         if (id != undefined) {
-            var dataType = object + "-" + type;
-
-            if(object != undefined) {
+            if(url != undefined) {
                 $.ajax({
-                    url : "/ajax/getDataById",
+                    url : url,
                     headers: {
                         "X-CSRF-TOKEN": $("meta[name=\"csrf-token\"]").attr("content"),
                     },
-                    data : {id : id, type : dataType},
+                    data : {id : id},
                     dataType : "json",
-                    type: "post",
+                    type: "get",
                     success: function(ret) {
                         if(ret.data != undefined)
-                            Modal.setModalValues(target, type, ret.data);
+                            Modal.setModalValues(target, ret.data);
                         else
-                            Modal.setModalValues(target, type, {});
+                            Modal.setModalValues(target, {});
                         $(target).modal("toggle");
+                        
+                        Modal.runCallback(callback, obj);
                     }
-                })
+                });
             } else {
                 var values = $(obj).closest("tr").data("values");
                 
                 $(obj).closest("tr").find("INPUT[data-add-to-modal-values='true']").each(function() {
-                    var regex = new RegExp(type + "\\[" + id + "\\]\\[(.*)\\]", "gm");
-                    var inputName = regex.exec($(this).attr("name"));
-                    if (inputName && inputName[1] != undefined && inputName[1]) {
-                        inputName = inputName[1];
-                        values[inputName] = $(this).val();
-                    }
+                    //var regex = new RegExp(type + "\\[" + id + "\\]\\[(.*)\\]", "gm");
+                    //var inputName = regex.exec($(this).attr("name"));
+                    //if (inputName && inputName[1] != undefined && inputName[1]) {
+                    //    inputName = inputName[1];
+                    //    values[inputName] = $(this).val();
+                    //}
                 });
                 
-                console.log(values);
-                Modal.setModalValues(target, type, values);
+                Modal.setModalValues(target, values);
                 $(target).modal("toggle");
+                Modal.runCallback(callback, obj);
             }
         } else {
             var defaultValues = $(obj).data('default-values');
@@ -111,9 +66,9 @@ Modal = {
                 {
                     var fieldObj = null;
                     if(Array.isArray(defaultValues[i]))
-                        fieldObj = $(target).find("*[name='" + type + "[" + i + "][]']");
+                        fieldObj = $("FORM", target).find("*[name='[" + i + "][]']");
                     else
-                        fieldObj = $(target).find("*[name='" + type + "[" + i + "]']");
+                        fieldObj = $("FORM", target).find("*[name='[" + i + "]']");
 
                     if(!fieldObj) continue;
 
@@ -123,7 +78,7 @@ Modal = {
                         if(Array.isArray(defaultValues[i]))
                         {
                             for(j in defaultValues[i])
-                                $(target).find("*[name='" + type + "[" + v + "][]'][value='"+defaultValues[i][j]+"']").prop("checked", true);
+                                $("FORM", target).find("*[name='[" + v + "][]'][value='"+defaultValues[i][j]+"']").prop("checked", true);
                         }
                         else
                             fieldObj.prop("checked", true);
@@ -143,58 +98,67 @@ Modal = {
             $(target).find(".current-min").val(currentMin);
 
             $(target).modal("toggle");
-        }
-
-        if(callback != undefined)
-        {
-            var tmp = callback.split(".");
-            var cObject = tmp[0];
-            var cFunction = tmp[1];
-
-            if(typeof window[cObject][cFunction] == "function")
-                window[cObject][cFunction](obj);
+            Modal.runCallback(callback, obj);
         }
 
         App.reInitDatepicker();
     },
 
-    onModalSubmitForm : function(form, type, onSuccess) {
+    onModalSubmitForm : function(form, onSuccess) {
         if(!App.valid(form)) {
-            var formData = {};
-            formData[type] = Modal.getModalFormData(form, type);
-
             App.formSubmitButton(form, "start");
+            
+            var processData = true;
+            var contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            
+            var data = form.serialize();
+            if (form.attr("data-file") != undefined && form.attr("data-file")) {
+                data = new FormData(form[0]);
+                processData = false;
+                contentType = false;
+            }
+            
             $.ajax({
                 url : form.attr("action"),
                 headers: {
                     "X-CSRF-TOKEN": $("meta[name=\"csrf-token\"]").attr("content"),
                 },
-                data : formData,
+                data : data,
                 dataType : "json",
                 type: "post",
+                processData: processData,
+                contentType: contentType,
                 success: function(ret) {
-                    if(ret.success != undefined && ret.success) {
-                        onSuccess(ret);
-                    } else {
-                        if(ret.error != undefined)
-                            App.formErrors(form, ret.error);
+                    onSuccess(ret);
+                    App.formSubmitButton(form, "finish");
+                },
+                error: function(res) {
+                    var errorsArray = [];
+                    if (res.responseJSON.errors != undefined) {
+                        var errors = res.responseJSON.errors;
+                        for (const [key, value] of Object.entries(errors)) 
+                            value.forEach((e) => errorsArray.push(e))
                     }
+                    else if (res.responseJSON.message != undefined)
+                        errorsArray.push(res.responseJSON.message);
+                        
+                    Modal.formErrors(form, errorsArray);
                     App.formSubmitButton(form, "finish");
                 }
-            })
+            });
         }
     },
 
-    setModalValues : function(target, type, values) {
+    setModalValues : function(target, values) {
         for(v in values)
         {
             var obj = null;
             if(Array.isArray(values[v]))
             {
-                obj = $(target).find("*[name='" + type + "[" + v + "][]']");
+                obj = $("FORM", target).find("*[name='" + v + "[]']");
             }
             else
-                obj = $(target).find("*[name='" + type + "[" + v + "]']");
+                obj = $("FORM", target).find("*[name='" + v + "']");
 
             if(!obj) continue;
 
@@ -204,13 +168,33 @@ Modal = {
                 if(Array.isArray(values[v]))
                 {
                     for(j in values[v])
-                        $(target).find("*[name='" + type + "[" + v + "][]'][value='"+values[v][j]+"']").prop("checked", values[v] ? true : false);
+                        $(target).find("*[name='" + v + "[]'][value='"+values[v][j]+"']").prop("checked", values[v] ? true : false);
                 }
                 else
                     obj.prop("checked", values[v] ? true : false);
             }
             else
                 obj.val(values[v]);
+        }
+    },
+    
+    formErrors : function(form, errors) {
+        if(form.length && errors) {
+            var ul = $("<UL>").addClass("list-unstyled mb-0")
+            errors.forEach((e) => ul.append($("<LI>").text(e)));
+            form.find("DIV.alert-modal-error").html(ul).removeClass("d-none");
+        }
+    },
+    
+    runCallback : function(callback, obj) {
+        if(callback != undefined)
+        {
+            var tmp = callback.split(".");
+            var cObject = tmp[0];
+            var cFunction = tmp[1];
+
+            if(typeof window[cObject][cFunction] == "function")
+                window[cObject][cFunction](obj);
         }
     }
 }

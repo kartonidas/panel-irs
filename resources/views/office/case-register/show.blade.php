@@ -6,6 +6,11 @@
     <li class="breadcrumb-item active" aria-current="page">{{ __("Szczegóły sprawy") }}</li>
 @endsection
 
+@section("scripts")
+    <script src="{{ a("/res/libs/table.js") }}"></script>
+    <script src="{{ a("/res/office/js/modules/case.js") }}"></script>
+@endsection
+
 @section("content")
     @include("office.partials.errors")
     @include("office.partials.message", ["module" => "office:cases"])

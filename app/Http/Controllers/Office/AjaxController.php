@@ -2,10 +2,12 @@
  
 namespace App\Http\Controllers\Office;
 
+use Exception;
 use Illuminate\Http\Request;
 
 use App\Http\Requests\Office\CustomerSftpRequest;
 use App\Libraries\Ftp;
+use App\Models\CaseRegistry;
 
 class AjaxController
 {

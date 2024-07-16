@@ -3,14 +3,28 @@
         <small>{{ __($label) }}:</small>
     </div>
     <div class="fs-6">
-        @if($yesNo())
-            @if($value)
-                {{ __("TAK") }}
-            @else
-                {{ __("NIE") }}
-            @endif
+        @if(!empty($content) && !$content->isEmpty())
+            {{ $content }}
         @else
-            {!! $value !!}
+            @if($route)
+                <a href="{{ $route }}">
+            @endif
+            
+            @if($yesNo())
+                @if($value)
+                    {{ __("TAK") }}
+                @else
+                    {{ __("NIE") }}
+                @endif
+            @else
+                {!! $value !!}
+            @endif
+            
+            {{ $slot }}
+            
+            @if($route)
+                </a>
+            @endif
         @endif
     </div>
 </div>

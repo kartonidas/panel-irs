@@ -15,6 +15,7 @@ class TableRow extends Component
         public string|null $value,
         public bool $border = true,
         public bool $yesNo = false,
+        public string|null $route = null,
     ) {}
  
     public function render(): View

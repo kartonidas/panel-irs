@@ -23,6 +23,13 @@
                     </a>
                 </li>
             @endif
+            @if(\App\Models\OfficeUser::checkAccess("courts:list", false))
+                <li class="nav-item">
+                    <a href="{{ route("office.courts") }}" class="nav-link @if(($activeMenuItem ?? "") == "courts"){{ "active" }}@endif"> <i class="nav-icon bi bi-building"></i>
+                        <p>{{ __("Baza sądów") }}</p>
+                    </a>
+                </li>
+            @endif
             @if(\App\Models\OfficeUser::checkAccess("users:list", false))
                 <li class="nav-item">
                     <a href="{{ route("office.users") }}" class="nav-link @if(($activeMenuItem ?? "") == "users"){{ "active" }}@endif"> <i class="nav-icon bi bi-person-plus"></i>

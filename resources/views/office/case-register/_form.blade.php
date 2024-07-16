@@ -1,7 +1,12 @@
 <div class="row mt-4">
     <div class="col-12 col-md-5 mb-3">
         <label for="customerName" class="form-label">{{ __("Nazwa klienta") }}*</label>
-        <input type="text" name="customer_name" class="form-control" id="customerName" value="{{ $form["customer_name"] ?? "" }}" data-validate="required">
+        <select class="form-control form-select-2" name="customer_id" id="customerName" data-validate="required" data-allow-clear="true" data-placeholder="{{ __("- wbierz klienta ") }}">
+            <option></option>
+            @foreach($customers as $customer)
+                <option value="{{ $customer->id }}" @if($customer->id == ($form["customer_id"] ?? "")){{ "selected" }}@endif>{{ $customer->name }}</option>
+            @endforeach
+        </select>
         <small class="input-error-info"></small>
     </div>
     <div class="col-12 col-md-4 mb-3">
@@ -19,6 +24,54 @@
         <input type="text" name="opponent" class="form-control" id="opponent" value="{{ $form["opponent"] ?? "" }}" data-validate="required">
         <small class="input-error-info"></small>
     </div>
+    <div class="col-12 col-sm-3 mb-3">
+        <label for="opponentPesel" class="form-label">{{ __("PESEL") }}</label>
+        <input type="text" name="opponent_pesel" class="form-control" id="opponentPesel" value="{{ $form["opponent_pesel"] ?? "" }}" data-validate="pesel">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-3 mb-3">
+        <label for="opponentRegon" class="form-label">{{ __("REGON") }}</label>
+        <input type="text" name="opponent_regon" class="form-control" id="opponentRegon" value="{{ $form["opponent_regon"] ?? "" }}">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-3 mb-3">
+        <label for="opponentNip" class="form-label">{{ __("NIP") }}</label>
+        <input type="text" name="opponent_nip" class="form-control" id="opponentNip" value="{{ $form["opponent_nip"] ?? "" }}" data-validate="nip">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-3 mb-3">
+        <label for="opponentKrs" class="form-label">{{ __("KRS") }}</label>
+        <input type="text" name="opponent_krs" class="form-control" id="opponentKrs" value="{{ $form["opponent_krs"] ?? "" }}">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-4 mb-3">
+        <label for="opponentStreet" class="form-label">{{ __("Ulica") }}</label>
+        <input type="text" name="opponent_street" class="form-control" id="opponentStreet" value="{{ $form["opponent_street"] ?? "" }}">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-4 mb-3">
+        <label for="opponentZip" class="form-label">{{ __("Kod pocztowy") }}</label>
+        <input type="text" name="opponent_zip" class="form-control" id="opponentZip" value="{{ $form["opponent_zip"] ?? "" }}">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-4 mb-3">
+        <label for="opponentCity" class="form-label">{{ __("Miasto") }}</label>
+        <input type="text" name="opponent_city" class="form-control" id="opponentCity" value="{{ $form["opponent_city"] ?? "" }}">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-6 mb-3">
+        <label for="opponentPhone" class="form-label">{{ __("Telefon") }}</label>
+        <input type="text" name="opponent_phone" class="form-control" id="opponentPhone" value="{{ $form["opponent_phone"] ?? "" }}">
+        <small class="input-error-info"></small>
+    </div>
+    <div class="col-12 col-sm-6 mb-3">
+        <label for="opponentEmail" class="form-label">{{ __("Adres e-mail") }}</label>
+        <input type="text" name="opponent_email" class="form-control" id="opponentEmail" value="{{ $form["opponent_email"] ?? "" }}">
+        <small class="input-error-info"></small>
+    </div>
+</div>
+    
+<div class="row mt-5">
     <div class="col-12 col-md-4 mb-3">
         <label for="statusId" class="form-label">{{ __("Stan sprawy") }}*</label>
         <select name="status_id" class="form-select" id="statusId" data-validate="required">
@@ -38,7 +91,7 @@
     </div>
     <div class="col-12 col-md-4 mb-3">
         <label for="dateOfDeath" class="form-label">{{ __("Data zgonu") }}<span id="dateOfDeathRequiredMark" class="@if(($form["death"] ?? "") != "1"){{ "d-none" }}@endif">*</span></label>
-        <input type="text" name="date_of_death" class="form-control datepicker" id="dateOfDeath" value="{{ $form["date_of_death"] ?? "" }}" data-validate="required" disabled>
+        <input type="text" name="date_of_death" class="form-control datepicker" id="dateOfDeath" value="{{ $form["date_of_death"] ?? "" }}" data-validate="required" @if(($form["death"] ?? "") != "1"){{ "disabled" }}@endif>
         <small class="input-error-info"></small>
     </div>
     <div class="col-12 col-md-6 mb-3">
@@ -63,7 +116,12 @@
     </div>
     <div class="col-12 col-md-6 mb-3">
         <label for="court" class="form-label">{{ __("Sąd") }}</label>
-        <input type="text" name="court" class="form-control" id="court" value="{{ $form["court"] ?? "" }}">
+        <select class="form-select form-select-2" id="court" name="court_id" data-allow-clear="true" data-placeholder="">
+            <option></option>
+            @foreach($courts as $court)
+                <option value="{{ $court->id }}" @if($court->id == ($form["court_id"] ?? "")){{ "selected" }}@endif>{{ $court->name }}</option>
+            @endforeach
+        </select>
         <div class="form-text">{{ __("Pełna nazwa sądu") }}</div>
         <small class="input-error-info"></small>
     </div>

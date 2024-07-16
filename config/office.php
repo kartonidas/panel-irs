@@ -7,6 +7,9 @@ return [
             20,
             50,
             100
+        ],
+        "ajax" => [
+            "size" => 20
         ]
     ],
     "permissions" => [
@@ -25,6 +28,10 @@ return [
             ],
             "dictionaries" => [
                 "module" => "Słowniki",
+                "operation" => ["list", "create", "update", "delete"]
+            ],
+            "courts" => [
+                "module" => "Baza sądów",
                 "operation" => ["list", "create", "update", "delete"]
             ],
         ],

@@ -36,3 +36,11 @@ if (!function_exists("meta_title"))
         return $title;
     }
 }
+
+if (!function_exists("amount"))
+{
+    function amount($amount)
+    {
+        return \App\Libraries\Helper::amount($amount);
+    }
+}

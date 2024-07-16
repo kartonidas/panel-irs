@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\CaseRegistry;
+use App\Models\CaseRegisterCourt;
+use App\Models\CaseRegisterEnforcement;
+use App\Models\CaseRegisterHistory;
 use App\Models\DictionaryExtra;
 use App\Observers\DictionaryObserver;
 
@@ -15,6 +19,29 @@ class Dictionary extends Model
     
     public function canDelete()
     {
+        $used = 0;
+        switch($this->type)
+        {
+            case "case_execution_status":
+                $used = CaseRegisterEnforcement::where("execution_status_id", $this->id)->count();
+            break;
+        
+            case "case_history_action":
+                $used = CaseRegisterHistory::where("history_action_id", $this->id)->count();
+            break;
+        
+            case "case_mode":
+                $used = CaseRegisterCourt::where("mode_id", $this->id)->count();
+            break;
+        
+            case "case_status":
+                $usage = CaseRegistry::where("status_id", $this->id)->count();
+            break;
+        }
+        
+        if($used)
+            return false;
+        
         return true;
     }
     
@@ -29,11 +56,11 @@ class Dictionary extends Model
     {
         if(!isset(self::$cachedByType[$type]))
         {
-            $rows = self::where("type", $type)->get();
+            $rows = self::where("type", $type)->orderBy("value", "ASC")->get();
             foreach($rows as $row)
                 self::$cachedByType[$type][$row->id] = $row->value;
         }
-        return self::$cachedByType[$type];
+        return self::$cachedByType[$type] ?? [];
     }
     
     public function saveExtraValues($extras)

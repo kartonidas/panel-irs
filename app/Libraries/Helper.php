@@ -480,7 +480,8 @@ class Helper
             $streetHouseApartmentParts[] = $house_no;
         if(!empty($apartment_no))
             $streetHouseApartmentParts[] = $apartment_no;
-        $streetParts[] = implode("/", $streetHouseApartmentParts);
+        if(!empty($streetHouseApartmentParts))
+            $streetParts[] = implode("/", $streetHouseApartmentParts);
         
         $parts[] = implode(" ", $streetParts);
         $parts[] = $zip . " " . $city;

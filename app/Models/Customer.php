@@ -121,4 +121,10 @@ class Customer extends Model
         
         return $visibilityFields;
     }
+    
+    public function hasCustomerSftpConfigured()
+    {
+        $sftp = $this->sftp()->first();
+        return !empty($sftp->host);
+    }
 }

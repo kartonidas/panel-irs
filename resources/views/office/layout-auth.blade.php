@@ -103,6 +103,7 @@
         <script src="{{ a("/res/office/js/adminlte.js") }}"></script>
         <script src="{{ a("/res/libs/select2/js/select2.full.min.js") }}"></script>
         <script src="{{ a("/res/office/js/app.js") }}"></script>
+        <script src="{{ a("/res/libs/modal.js") }}"></script>
         <script src="{{ a("/res/libs/validator.js") }}"></script>
         @yield("scripts")
         
