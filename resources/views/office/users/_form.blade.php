@@ -53,5 +53,22 @@
             </label>
         </div>
     </div>
+    <div class="col-8">
+        <label for="formCaseAccessType" class="form-label">{{ __("Dostęp do spraw") }}*</label>
+        <select name="user[case_access_type]" class="form-select" id="formCaseAccessType" data-validate="required" onchange="User.changeCaseAccessType(this)">
+            <option></option>
+            @foreach($caseAccessTypes as $caseAccessType => $caseAccessName)
+                <option value="{{ $caseAccessType }}" @if(($form["user"]["case_access_type"] ?? null) == $caseAccessType){{ "selected" }}@endif>{{ $caseAccessName }}</option>
+            @endforeach
+        </select>
+        <small class="input-error-info"></small>
+        <div class="form-text text-danger d-none" id="accessTypeWarning">
+            {{ __("Dostęp do wybranych spraw zdefiniujesz po zapisaniu użytkownika.") }}
+        </div>
+    </div>
+    <div class="col-4">
+        <label class="form-label">&nbsp;</label>
+        <a href="@if(!empty($id)){{ route("office.user.selected_case_access", $id) }}@else{{ "#" }}@endif" id="accessTypeCaseSelectedButton" class="btn btn-primary d-block @if(empty($canSelectCaseAccess)){{ "disabled" }}@endif @if(($form["user"]["case_access_type"] ?? null) != \App\Models\OfficeUser::CASE_ACCESS_SELECTED){{ "d-none" }}@endif">{{ __("Wybierz sprawy") }}</a>
+    </div>
 </div>
     

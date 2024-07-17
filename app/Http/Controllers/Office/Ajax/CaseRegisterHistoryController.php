@@ -13,6 +13,7 @@ use App\Http\Requests\Office\CaseHistoryRequest;
 use App\Libraries\Helper;
 use App\Models\CaseRegistry;
 use App\Models\CaseRegisterHistory;
+use App\Models\OfficeUser;
 use App\Traits\AjaxTable;
 
 class CaseRegisterHistoryController extends AjaxExportControllerAbstract
@@ -37,6 +38,8 @@ class CaseRegisterHistoryController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $histories = $case->histories()->select("case_register_histories.*");
         
@@ -83,6 +86,8 @@ class CaseRegisterHistoryController extends AjaxExportControllerAbstract
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $history = CaseRegisterHistory::find($hid);
         if(!$history)
             throw new Exception(__("Czynność nie istnieje"));
@@ -99,6 +104,8 @@ class CaseRegisterHistoryController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         if(!empty($validated["id"]))
         {
@@ -129,6 +136,8 @@ class CaseRegisterHistoryController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $history = CaseRegisterHistory::find($hid);
         if(!$history)

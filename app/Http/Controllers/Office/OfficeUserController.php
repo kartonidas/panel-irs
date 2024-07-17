@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Office;
 
+use Exception;
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +14,9 @@ use App\Http\Requests\Office\OfficeUserUpdateRequest;
 use App\Http\Requests\Office\ProfileUpdateRequest;
 use App\Libraries\Data;
 use App\Libraries\Helper;
+use App\Models\Customer;
 use App\Models\OfficeUser;
+use App\Models\OfficeUsersCaseAccess;
 use App\Models\OfficePermission;
 use App\Traits\Form;
 
@@ -76,6 +80,8 @@ class OfficeUserController extends Controller
         $vData = [
             "form" => $formData,
             "permissions" => OfficePermission::orderBy("role", "ASC")->orderBy("name", "ASC")->get(),
+            "caseAccessTypes" => OfficeUser::getCaseAccessTypes(),
+            "canSelectCaseAccess" => false,
         ];
         return view("office.users.create", $vData);
     }
@@ -91,6 +97,7 @@ class OfficeUserController extends Controller
         $row->password = Hash::make($data["user"]["password"]);
         $row->active = !empty($data["user"]["active"]) ? 1 : 0;
         $row->office_permission_id = $data["user"]["office_permission_id"];
+        $row->case_access_type = $data["user"]["case_access_type"];
         $row->save();
 
         Helper::setMessage("office:users", __("Pracownik został dodany"));
@@ -121,6 +128,8 @@ class OfficeUserController extends Controller
             "id" => $row->id,
             "form" => $formData,
             "permissions" => OfficePermission::orderBy("role", "ASC")->orderBy("name", "ASC")->get(),
+            "caseAccessTypes" => OfficeUser::getCaseAccessTypes(),
+            "canSelectCaseAccess" => $row->case_access_type == OfficeUser::CASE_ACCESS_SELECTED,
         ];
         return view("office.users.update", $vData);
     }
@@ -138,6 +147,7 @@ class OfficeUserController extends Controller
         $row->email = $data["user"]["email"];
         $row->active = !empty($data["user"]["active"]) ? 1 : 0;
         $row->office_permission_id = $data["user"]["office_permission_id"];
+        $row->case_access_type = $data["user"]["case_access_type"];
         if(!empty($data["user"]["change_password"]))
             $row->password = Hash::make($data["user"]["password"]);
         $row->save();
@@ -239,5 +249,37 @@ class OfficeUserController extends Controller
         
         Helper::setMessage("office:users", __("Konto zostało odblokowane"));
         return redirect()->route("office.users");
+    }
+    
+    public function userSelectedCaseAccess(Request $request, $id)
+    {
+        OfficeUser::checkAccess("users:update");
+        view()->share("activeMenuItem", "users");
+        
+        $row = OfficeUser::find($id);
+        if(!$row)
+            return redirect()->route("office.users")->withErrors(["msg" => __("Pracownik nie istnieje")]);
+        
+        if($row->case_access_type != OfficeUser::CASE_ACCESS_SELECTED)
+            return redirect()->route("office.users")->withErrors(["msg" => __("Brak zdefiniowanego dostęp do wybranych spraw")]);
+        
+        $customersArray = [];
+        $customers = Customer::orderBy("name", "ASC")->get();
+        foreach($customers as $customer)
+        {
+            $customersArray[$customer->id] = [
+                "name" => $customer->name,
+                "case_numbers" => $customer->caseNumbers()->pluck("number")->all(),
+            ];
+        }
+        
+        $vData = [
+            "user" => $row,
+            "caseSelectedAccess" => $row->caseAccess()->paginate(config("office.lists.ajax.size")),
+            "customers" => $customersArray,
+            "caseAccessTypes" => OfficeUsersCaseAccess::getCaseAccessTypes()
+        ];
+
+        return view("office.users.selected_case_access_form", $vData);
     }
 }

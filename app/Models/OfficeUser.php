@@ -5,6 +5,7 @@ namespace App\Models;
 use DateTime;
 use DateInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +13,9 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Exceptions\OfficeAccessDeniedException;
 use App\Libraries\Data;
+use App\Models\CaseRegistry;
 use App\Models\OfficePermission;
+use App\Models\OfficeUsersCaseAccess;
 
 class OfficeUser extends Authenticatable
 {
@@ -33,6 +36,17 @@ class OfficeUser extends Authenticatable
     public static $sortable = ["email", "name", "active", "block"];
     public static $defaultSortable = ["name", "asc"];
     public static $filter = ["email", "name", "block"];
+    
+    public const CASE_ACCESS_ALL = "all";
+    public const CASE_ACCESS_SELECTED = "selected";
+    
+    public static function getCaseAccessTypes() : array
+    {
+        return [
+            self::CASE_ACCESS_ALL => __("Wszystkie sprawy"),
+            self::CASE_ACCESS_SELECTED => __("Wybrane sprawy"),
+        ];
+    }
     
     protected function casts(): array
     {
@@ -105,5 +119,34 @@ class OfficeUser extends Authenticatable
     {
         $time = time() - env("LOGOUT_INACTIVE_TIMEOUT_MIN", 15) * 60;
         return $this->last_activity < $time ? true : false;
+    }
+    
+    public function caseAccess() : HasMany
+    {
+        return $this->hasMany(OfficeUsersCaseAccess::class);
+    }
+    
+    public static function checkCaseAccess(CaseRegistry $case, $eception = true)
+    {
+        $user = Auth::guard("office")->user();
+        if($user->case_access_type == self::CASE_ACCESS_ALL)
+            return true;
+        
+        $caseAccessCustomerNumbers = [];
+        $caseAccess = $user->caseAccess()->get();
+        foreach($caseAccess as $row)
+        {
+            if($row->type == OfficeUsersCaseAccess::CASE_ACCESS_ALL)
+                $caseAccessCustomerNumbers[$row->customer_id] = "all";
+            else
+                $caseAccessCustomerNumbers[$row->customer_id] = $row->getSelectedCaseNumbers();
+        }
+        
+        if(empty($caseAccessCustomerNumbers[$case->customer_id]) || ($caseAccessCustomerNumbers[$case->customer_id] != "all" && !in_array($case->case_number, $caseAccessCustomerNumbers[$case->customer_id])))
+        {
+            if($eception)
+                throw new OfficeAccessDeniedException;
+            return false;
+        }
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use App\Rules\OfficeUserLogin;
 use App\Models\OfficePermission;
+use App\Models\OfficeUser;
 
 class OfficeUserStoreRequest extends FormRequest
 {
@@ -34,6 +35,7 @@ class OfficeUserStoreRequest extends FormRequest
             $rule["user.password_2"] = "required|same:user.password";
         }
         
+        $rule["user.case_access_type"] = ["required", Rule::in(array_keys(OfficeUser::getCaseAccessTypes()))];
         return $rule;
     }
     
@@ -53,6 +55,8 @@ class OfficeUserStoreRequest extends FormRequest
             "user.password_2.same" => __("Hasła nie są identyczne"),
             "user.office_permission_id.required" => __("Wybierz uprawnienia"),
             "user.office_permission_id.in" => __("Nieprawidłowe uprawnienia"),
+            "user.case_access_type.required" => __("Uzupełnij dostęp do spraw"),
+            "user.case_access_type.in" => __("Nieprawidłowa wartość w polu dostęp do spraw"),
         ];
     }
 }

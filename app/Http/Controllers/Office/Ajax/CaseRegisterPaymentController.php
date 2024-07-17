@@ -13,6 +13,7 @@ use App\Http\Requests\Office\CasePaymentRequest;
 use App\Libraries\Helper;
 use App\Models\CaseRegistry;
 use App\Models\CaseRegisterPayment;
+use App\Models\OfficeUser;
 use App\Traits\AjaxTable;
 
 class CaseRegisterPaymentController extends AjaxExportControllerAbstract
@@ -37,6 +38,8 @@ class CaseRegisterPaymentController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $payments = $case->payments();
         
@@ -75,6 +78,8 @@ class CaseRegisterPaymentController extends AjaxExportControllerAbstract
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $payment = CaseRegisterPayment::find($pid);
         if(!$payment)
             throw new Exception(__("Wpłata nie istnieje"));
@@ -91,6 +96,8 @@ class CaseRegisterPaymentController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         if(!empty($validated["id"]))
         {
@@ -119,6 +126,8 @@ class CaseRegisterPaymentController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $payment = CaseRegisterPayment::find($pid);
         if(!$payment)

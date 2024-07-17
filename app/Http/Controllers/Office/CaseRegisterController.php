@@ -23,6 +23,7 @@ use App\Models\CaseRegisterSchedule;
 use App\Models\Court;
 use App\Models\Customer;
 use App\Models\Dictionary;
+use App\Models\OfficeUser;
 use App\Traits\Form;
 
 class CaseRegisterController extends Controller
@@ -41,7 +42,7 @@ class CaseRegisterController extends Controller
         $filter = $this->getFilter($request);
         $sort = $this->getSortOrder($request);
         
-        $cases = CaseRegistry::select("case_registries.*");
+        $cases = CaseRegistry::byUser()->select("case_registries.*");
         
         switch($sort[0])
         {
@@ -131,6 +132,8 @@ class CaseRegisterController extends Controller
         if(!$case)
             return redirect()->route("office.case_register")->withErrors(["msg" => __("Sprawa nie istnieje")]);
         
+        OfficeUser::checkCaseAccess($case);
+        
         $vData = [
             "case" => $case,
             "form" => $request->old() ? $request->old() : $case->toArray(),
@@ -146,6 +149,8 @@ class CaseRegisterController extends Controller
         $case = CaseRegistry::find($id);
         if(!$case)
             return redirect()->route("office.case_register")->withErrors(["msg" => __("Sprawa nie istnieje")]);
+        
+        OfficeUser::checkCaseAccess($case);
         
         $validated = $request->validated();
         
@@ -185,6 +190,8 @@ class CaseRegisterController extends Controller
         $case = CaseRegistry::find($id);
         if(!$case)
             return redirect()->route("office.case_register")->withErrors(["msg" => __("Sprawa nie istnieje")]);
+        
+        OfficeUser::checkCaseAccess($case);
         
         $vData = [
             "case" => $case,

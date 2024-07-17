@@ -13,6 +13,7 @@ use App\Http\Requests\Office\CaseEnforcementRequest;
 use App\Libraries\Helper;
 use App\Models\CaseRegistry;
 use App\Models\CaseRegisterEnforcement;
+use App\Models\OfficeUser;
 use App\Traits\AjaxTable;
 
 class CaseRegisterEnforcementController extends AjaxExportControllerAbstract
@@ -37,6 +38,8 @@ class CaseRegisterEnforcementController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $enforcements = $case->enforcements()->select("case_register_enforcements.*");
         
@@ -87,6 +90,8 @@ class CaseRegisterEnforcementController extends AjaxExportControllerAbstract
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $enforcement = CaseRegisterEnforcement::find($eid);
         if(!$enforcement)
             throw new Exception(__("Postępowanie nie istnieje"));
@@ -103,6 +108,8 @@ class CaseRegisterEnforcementController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         if(!empty($validated["id"]))
         {
@@ -151,6 +158,8 @@ class CaseRegisterEnforcementController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $enforcement = CaseRegisterEnforcement::find($eid);
         if(!$enforcement)

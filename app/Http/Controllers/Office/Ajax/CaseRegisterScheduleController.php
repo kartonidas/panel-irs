@@ -13,6 +13,7 @@ use App\Http\Requests\Office\CaseScheduleRequest;
 use App\Libraries\Helper;
 use App\Models\CaseRegistry;
 use App\Models\CaseRegisterSchedule;
+use App\Models\OfficeUser;
 use App\Traits\AjaxTable;
 
 class CaseRegisterScheduleController extends AjaxExportControllerAbstract
@@ -37,6 +38,8 @@ class CaseRegisterScheduleController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $schedules = $case->schedules();
         
@@ -75,6 +78,8 @@ class CaseRegisterScheduleController extends AjaxExportControllerAbstract
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $schedule = CaseRegisterSchedule::find($hid);
         if(!$schedule)
             throw new Exception(__("Harmonogram nie istnieje"));
@@ -91,6 +96,8 @@ class CaseRegisterScheduleController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         if(!empty($validated["id"]))
         {
@@ -119,6 +126,8 @@ class CaseRegisterScheduleController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $schedule = CaseRegisterSchedule::find($hid);
         if(!$schedule)

@@ -13,6 +13,7 @@ use App\Http\Requests\Office\CaseClaimRequest;
 use App\Libraries\Helper;
 use App\Models\CaseRegistry;
 use App\Models\CaseRegisterClaim;
+use App\Models\OfficeUser;
 use App\Traits\AjaxTable;
 
 class CaseRegisterClaimController extends AjaxExportControllerAbstract
@@ -37,6 +38,8 @@ class CaseRegisterClaimController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $claims = $case->claims();
         
@@ -72,6 +75,8 @@ class CaseRegisterClaimController extends AjaxExportControllerAbstract
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $claim = CaseRegisterClaim::find($cid);
         if(!$claim)
             throw new Exception(__("Roszczenie nie istnieje"));
@@ -88,6 +93,8 @@ class CaseRegisterClaimController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         if(!empty($validated["id"]))
         {
@@ -122,6 +129,8 @@ class CaseRegisterClaimController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $claim = CaseRegisterClaim::find($cid);
         if(!$claim)

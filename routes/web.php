@@ -40,6 +40,11 @@ Route::prefix(env("ADMIN_PANEL_PREFIX"))->group(function () {
         Route::post('/user/delete/{id}', [Office\OfficeUserController::class, "userDelete"])->name("office.user.delete")->where("id", "[0-9]+");
         Route::post('/user/block/{id}', [Office\OfficeUserController::class, "userBlockAccount"])->name("office.user.block")->where("id", "[0-9]+");
         Route::post('/user/unblock/{id}', [Office\OfficeUserController::class, "userUnblockAccount"])->name("office.user.unblock")->where("id", "[0-9]+");
+        Route::get('/user/case-access/{id}', [Office\OfficeUserController::class, "userSelectedCaseAccess"])->name("office.user.selected_case_access")->where("id", "[0-9]+");
+        Route::get('/user/case-access-list/{id}', [Office\Ajax\OfficeUserSelectedCaseAccess::class, "list"])->name("office.user.selected_case_access.list")->where("id", "[0-9]+");
+        Route::get('/user/case-access-list/{id}/access/{aid}', [Office\Ajax\OfficeUserSelectedCaseAccess::class, "getAccess"])->name("office.user.selected_case_access.access")->where("id", "[0-9]+")->where("aid", "[0-9]+");
+        Route::post('/user/case-access-list/{id}/access', [Office\Ajax\OfficeUserSelectedCaseAccess::class, "accessPost"])->name("office.user.selected_case_access.access.post")->where("id", "[0-9]+");
+        Route::post('/user/case-access-list/{id}/access/{aid}', [Office\Ajax\OfficeUserSelectedCaseAccess::class, "deleteAccess"])->name("office.user.selected_case_access.access.delete")->where("id", "[0-9]+")->where("aid", "[0-9]+");
         
         Route::get('/permissions', [Office\OfficePermissionsController::class, "list"])->name("office.permissions");
         Route::get('/permissions/sort', [Office\OfficePermissionsController::class, "sort"])->name("office.permissions.sort");

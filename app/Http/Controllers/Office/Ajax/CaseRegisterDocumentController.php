@@ -16,6 +16,7 @@ use App\Libraries\Ftp;
 use App\Libraries\Helper;
 use App\Models\CaseRegistry;
 use App\Models\CaseRegisterDocument;
+use App\Models\OfficeUser;
 use App\Traits\AjaxTable;
 
 class CaseRegisterDocumentController extends Controller
@@ -35,6 +36,8 @@ class CaseRegisterDocumentController extends Controller
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $documents = $case->documents();
         
@@ -73,6 +76,8 @@ class CaseRegisterDocumentController extends Controller
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $document = CaseRegisterDocument::find($did);
         if(!$document)
             throw new Exception(__("Dokument nie istnieje"));
@@ -89,6 +94,8 @@ class CaseRegisterDocumentController extends Controller
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $customer = $case->getCustomer();
         if(!$customer)
@@ -145,6 +152,8 @@ class CaseRegisterDocumentController extends Controller
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $document = CaseRegisterDocument::find($did);
         if(!$document)
             throw new Exception(__("Postępowanie nie istnieje"));
@@ -159,6 +168,8 @@ class CaseRegisterDocumentController extends Controller
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $document = CaseRegisterDocument::find($did);
         if(!$document)

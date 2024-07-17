@@ -13,7 +13,7 @@
 @section("content")
     @include("office.partials.errors")
     
-    <form method="POST" action="{{ route("office.user.create.post") }}" class="validate1">
+    <form method="POST" action="{{ route("office.user.create.post") }}" class="validate">
         <div class="card card-primary card-outline mb-4">
             <div class="card-body">
                 @include("office.users._form")

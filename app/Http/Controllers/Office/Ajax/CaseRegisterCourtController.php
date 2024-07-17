@@ -13,6 +13,7 @@ use App\Http\Requests\Office\CaseCourtRequest;
 use App\Libraries\Helper;
 use App\Models\CaseRegistry;
 use App\Models\CaseRegisterCourt;
+use App\Models\OfficeUser;
 use App\Traits\AjaxTable;
 
 class CaseRegisterCourtController extends AjaxExportControllerAbstract
@@ -37,6 +38,8 @@ class CaseRegisterCourtController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $courts = $case->courts()->select("case_register_courts.*");
         
@@ -97,6 +100,8 @@ class CaseRegisterCourtController extends AjaxExportControllerAbstract
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
         
+        OfficeUser::checkCaseAccess($case);
+        
         $court = CaseRegisterCourt::find($cid);
         if(!$court)
             throw new Exception(__("Postępowanie nie istnieje"));
@@ -113,6 +118,8 @@ class CaseRegisterCourtController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         if(!empty($validated["id"]))
         {
@@ -169,6 +176,8 @@ class CaseRegisterCourtController extends AjaxExportControllerAbstract
         $case = CaseRegistry::find($id);
         if(!$case)
             throw new Exception(__("Sprawa nie istnieje"));
+        
+        OfficeUser::checkCaseAccess($case);
         
         $court = CaseRegisterCourt::find($hid);
         if(!$court)
