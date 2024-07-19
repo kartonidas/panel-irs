@@ -1,7 +1,14 @@
 @if(!$claims->isEmpty())
     @foreach($claims as $claim)
         <tr>
-            <td class="align-middle text-start">{{ amount($claim->amount) }}</td>
+            <td class="align-middle text-start lh-1">
+                {{ amount($claim->amount) }} {{ $claim->currency }}
+                @if($claim->currency != "PLN")
+                    <div class="text-muted">
+                        <small>{{ amount($claim->amount_pln) }} PLN</small>
+                    </div>
+                @endif
+            </td>
             <td class="align-middle text-center">{{ $claim->date }}</td>
             <td class="align-middle text-center">{{ $claim->due_date }}</td>
             <td class="align-middle">{{ $claim->mark }}</td>

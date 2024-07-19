@@ -34,6 +34,10 @@ return [
                 "module" => "Baza sądów",
                 "operation" => ["list", "create", "update", "delete"]
             ],
+            "settings" => [
+                "module" => "Ustawienia",
+                "operation" => ["update"]
+            ],
         ],
         "employee" => [
             "invoicess" => [

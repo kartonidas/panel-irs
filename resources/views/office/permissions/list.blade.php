@@ -21,22 +21,20 @@
                 <table class="table table-striped">
                     <thead class="table-light">
                         <tr>
+                            <th style="width: 120px"></th>
                             <th>
                                 <a href="{{ route("office.permissions.sort", ["sort" => $sortColumns["name"]]) }}" class="{{ $sortColumns["class.name"] }}">
                                     {{ __("Nazwa grupy") }}
                                 </a>
                             </th>
                             <th style="width: 200px">{{ __("Rola") }}</th>
-                            <th style="width: 120px"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$permissions->isEmpty())
                             @foreach($permissions as $permission)
                                 <tr>
-                                    <td class="align-middle">{{ $permission->name }}</td>
-                                    <td class="align-middle">{{ $permission->getRoleName() }}</td>
-                                    <td class="align-middle text-end">
+                                    <td class="align-middle text-start">
                                         <a href="{{ route("office.permission.update", $permission->id) }}" class="btn btn-sm btn-primary btn-icon @if(!\App\Models\OfficeUser::checkAccess("permissions:update", false)){{ "disabled" }}@endif" title="Edycja" data-bs-toggle="tooltip">
                                             <i class="bi bi-pencil"></i>
                                         </a>
@@ -73,6 +71,8 @@
                                             </a>
                                        @endif
                                     </td>
+                                    <td class="align-middle">{{ $permission->name }}</td>
+                                    <td class="align-middle">{{ $permission->getRoleName() }}</td>
                                 </tr>
                             @endforeach
                         @else

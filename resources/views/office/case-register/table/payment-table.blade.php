@@ -2,8 +2,13 @@
     @foreach($payments as $payment)
         <tr>
             <td class="align-middle text-start">{{ $payment->date }}</td>
-            <td class="align-middle text-end">
-                {{ amount($payment->amount) }}
+            <td class="align-middle text-end lh-1">
+                {{ amount($payment->amount) }} {{ $payment->currency }}
+                @if($payment->currency != "PLN")
+                    <div class="text-muted">
+                        <small>{{ amount($payment->amount_pln) }} PLN</small>
+                    </div>
+                @endif
             </td>
             <td class="align-middle">
                 <a href="#" class="btn btn-sm btn-primary open-modal" data-modal="#paymentModal" data-id="{{ $payment->id }}" data-url="{{ route("office.case_register.payment", [$case->id, $payment->id], false) }}">

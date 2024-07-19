@@ -48,7 +48,7 @@ class Dictionary extends Model
     public function getTypeLabel()
     {
         $dictionaryTypes = config("dictionaries.types");
-        return $dictionaryTypes[$this->type]["name"] ?? $his->type;
+        return $dictionaryTypes[$this->type]["name"] ?? $this->type;
     }
     
     private static $cachedByType = [];

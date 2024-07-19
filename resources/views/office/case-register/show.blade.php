@@ -20,7 +20,7 @@
             <button class="nav-link active" id="nav-base-data-tab" data-bs-toggle="tab" data-bs-target="#base-data-tab" type="button">{{ __("Sprawa") }}</button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="nav-financial-summary-tab" data-bs-toggle="tab" data-bs-target="#financial-summary-tab" type="button">{{ __("Finanse") }}</button>
+            <button class="nav-link" id="nav-payments-tab" data-bs-toggle="tab" data-bs-target="#payments-tab" type="button">{{ __("Finanse") }}</button>
         </li>
         <li class="nav-item">
             <button class="nav-link" id="nav-claims-list-tab" data-bs-toggle="tab" data-bs-target="#claims-list-tab" type="button">{{ __("Roszczenia") }}</button>
@@ -46,8 +46,8 @@
         <div class="tab-pane fade show active" id="base-data-tab" role="tabpanel" aria-labelledby="base-data-tab">
             @include("office.case-register.partials.base-data")
         </div>
-        <div class="tab-pane fade" id="financial-summary-tab" role="tabpanel" aria-labelledby="financial-summary-tab">
-            @include("office.case-register.partials.financial-summary")
+        <div class="tab-pane fade" id="payments-tab" role="tabpanel" aria-labelledby="payments-tab">
+            @include("office.case-register.partials.payments")
         </div>
         <div class="tab-pane fade" id="claims-list-tab" role="tabpanel" aria-labelledby="claims-list-tab">
             @include("office.case-register.partials.claims-list")

@@ -95,6 +95,7 @@ Route::prefix(env("ADMIN_PANEL_PREFIX"))->group(function () {
         Route::get('/case-register/show/{id}', [Office\CaseRegisterController::class, "caseShow"])->name("office.case_register.show")->where("id", "[0-9]+");
         Route::get('/case-register/edit/{id}', [Office\CaseRegisterController::class, "caseUpdate"])->name("office.case_register.update")->where("id", "[0-9]+");
         Route::post('/case-register/edit/{id}', [Office\CaseRegisterController::class, "caseUpdatePost"])->name("office.case_register.update.post")->where("id", "[0-9]+");
+        Route::post('/case-register/delete/{id}', [Office\CaseRegisterController::class, "caseDelete"])->name("office.case_register.delete")->where("id", "[0-9]+");
         Route::get('/case-register/{id}/claims', [Office\Ajax\CaseRegisterClaimController::class, "list"])->name("office.case_register.claims")->where("id", "[0-9]+");
         Route::get('/case-register/{id}/claims/export', [Office\Ajax\CaseRegisterClaimController::class, "export"])->name("office.case_register.claims.export")->where("id", "[0-9]+");
         Route::get('/case-register/{id}/claim/{cid}', [Office\Ajax\CaseRegisterClaimController::class, "getClaim"])->name("office.case_register.claim")->where("id", "[0-9]+")->where("cid", "[0-9]+");
@@ -143,6 +144,9 @@ Route::prefix(env("ADMIN_PANEL_PREFIX"))->group(function () {
         Route::post('/court/delete/{id}', [Office\CourtController::class, "courtDelete"])->name("office.court.delete")->where("id", "[0-9]+");
         Route::get('/courts/import', [Office\CourtController::class, "courtImport"])->name("office.courts.import");
         Route::post('/courts/import', [Office\CourtController::class, "courtImportPost"])->name("office.courts.import.post");
+        
+        Route::get('/settings', [Office\SettingsController::class, "index"])->name("office.settings");
+        Route::post('/settings/currencies', [Office\SettingsController::class, "currenciesSave"])->name("office.currencies.post");
         
         Route::post('/ajax/{method}', [Office\AjaxController::class, "run"])->name("office.ajax");
         Route::get('/export/{uuid}', [Office\IndexController::class, "export"])->name("office.export");

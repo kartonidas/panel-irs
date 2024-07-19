@@ -57,6 +57,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th style="width: 120px"></th>
                             <th>
                                 <a href="{{ route("office.case_register.sort", ["sort" => $sortColumns["customer_name"]]) }}" class="{{ $sortColumns["class.customer_name"] }}">
                                     {{ __("Klient") }}
@@ -112,13 +113,46 @@
                             <th>{{ __("Kod pocztowy") }}</th>
                             <th>{{ __("Miasto") }}</th>
                             <th>{{ __("Status sprawy") }}</th>
-                            <th style="width: 120px"></th>
+                            <th>
+                                <a href="{{ route("office.case_register.sort", ["sort" => $sortColumns["balance"]]) }}" class="{{ $sortColumns["class.balance"] }}">
+                                    {{ __("Saldo") }}
+                                </a>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$cases->isEmpty())
                            @foreach($cases as $case)
                                <tr>
+                                    <td class="align-middle text-start">
+                                        <a href="{{ route("office.case_register.show", $case->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="bi-search"></i>
+                                        </a>
+                                            
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#removeCaseModal-{{ $case->id }}" class="btn btn-sm btn-danger">
+                                            <i class="bi-trash"></i>
+                                        </a>
+                                        <div class="modal fade" id="removeCaseModal-{{ $case->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                           <div class="modal-dialog text-start">
+                                               <div class="modal-content">
+                                                   <form method="POST" action="{{ route("office.case_register.delete", $case->id) }}" class="validate">
+                                                       <div class="modal-header">
+                                                           <h5 class="modal-title" id="exampleModalLabel">{{ __("Usuń sprawę") }}</h5>
+                                                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                       </div>
+                                                       <div class="modal-body">
+                                                            {{ __("Wybrana sprawa zostanie usunięta. Kontynuować?") }}
+                                                       </div>
+                                                       <div class="modal-footer">
+                                                           <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{ __("Anuluj") }}</button>
+                                                           <button type="submit" class="btn btn-sm btn-danger">{{ __("Usuń") }}</button>
+                                                       </div>
+                                                       <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                   </form>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </td>
                                     <td class="align-middle">
                                         {{ $case->getCustomerName() }}
                                     </td>
@@ -161,16 +195,14 @@
                                     <td class="align-middle">
                                         {{ $case->getStatusName() }}
                                     </td>
-                                    <td class="align-middle text-end">
-                                        <a href="{{ route("office.case_register.show", $case->id) }}" class="btn btn-sm btn-primary">
-                                            <i class="bi-search"></i>
-                                        </a>
-                                   </td>
+                                    <td class="align-middle">
+                                        {{ amount($case->balance) }} PLN
+                                    </td>
                                </tr>
                            @endforeach
                        @else
                            <tr>
-                               <td colspan="15">{{ __("Brak rekordów") }}</td>
+                               <td colspan="16">{{ __("Brak rekordów") }}</td>
                            </tr>
                        @endif
                     </tbody>

@@ -24,7 +24,7 @@ use App\Observers\CaseRegistryObserver;
 #[ObservedBy([CaseRegistryObserver::class])]
 class CaseRegistry extends Model
 {
-    public static $sortable = ["customer_signature", "rs_signature", "opponent", "customer_name", "opponent_pesel", "opponent_regon", "opponent_nip", "opponent_krs", "opponent_phone", "opponent_email"];
+    public static $sortable = ["customer_signature", "rs_signature", "opponent", "customer_name", "opponent_pesel", "opponent_regon", "opponent_nip", "opponent_krs", "opponent_phone", "opponent_email", "balance"];
     public static $defaultSortable = ["customer_signature", "asc"];
     public static $filter = ["customer_signature", "rs_signature", "customer_id", "status_id"];
     
@@ -148,5 +148,14 @@ class CaseRegistry extends Model
                 });
             }
         }
+    }
+    
+    public function calculateBalance()
+    {
+        $claims = $this->claims()->sum("amount_pln");
+        $payments = $this->payments()->sum("amount_pln");
+        
+        $this->balance = $claims - $payments;
+        $this->saveQuietly();
     }
 }

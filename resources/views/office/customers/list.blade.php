@@ -38,6 +38,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th style="width: 120px"></th>
                             <th>
                                 <a href="{{ route("office.customers.sort", ["sort" => $sortColumns["name"]]) }}" class="{{ $sortColumns["class.name"] }}">
                                     {{ __("Nazwa") }}
@@ -64,36 +65,13 @@
                                     {{ __("Aktywny") }}
                                 </a>
                             </th>
-                            <th style="width: 120px"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$customers->isEmpty())
                            @foreach($customers as $customer)
-                               <tr>
-                                    <td class="align-middle">
-                                        {{ $customer->name }}
-                                    </td>
-                                    <td class="align-middle">
-                                        {!! \App\Libraries\Helper::getAddress($customer->street, $customer->house_no, $customer->apartment_no, $customer->zip, $customer->city, "<br/>") !!}
-                                    </td>
-                                    <td class="align-middle">
-                                        {{ $customer->nip }}
-                                    </td>
-                                    <td class="align-middle">
-                                        {{ $customer->regon }}
-                                    </td>
-                                    <td class="align-middle">
-                                        {{ $customer->krs }}
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        @if($customer->active)
-                                            {{ __("Tak") }}
-                                        @else
-                                            {{ __("Nie") }}
-                                        @endif
-                                    </td>
-                                    <td class="align-middle text-end">
+                                <tr>
+                                    <td class="align-middle text-start">
                                         <a href="{{ route("office.customer.show", $customer->id) }}" class="btn btn-sm btn-primary">
                                             <i class="bi-search"></i>
                                         </a>
@@ -124,6 +102,28 @@
                                            </div>
                                         @endif
                                    </td>
+                                    <td class="align-middle">
+                                        {{ $customer->name }}
+                                    </td>
+                                    <td class="align-middle">
+                                        {!! \App\Libraries\Helper::getAddress($customer->street, $customer->house_no, $customer->apartment_no, $customer->zip, $customer->city, "<br/>") !!}
+                                    </td>
+                                    <td class="align-middle">
+                                        {{ $customer->nip }}
+                                    </td>
+                                    <td class="align-middle">
+                                        {{ $customer->regon }}
+                                    </td>
+                                    <td class="align-middle">
+                                        {{ $customer->krs }}
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        @if($customer->active)
+                                            {{ __("Tak") }}
+                                        @else
+                                            {{ __("Nie") }}
+                                        @endif
+                                    </td>
                                </tr>
                            @endforeach
                        @else

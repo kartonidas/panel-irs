@@ -38,6 +38,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th style="width: 120px"></th>
                             <th>
                                 <a href="{{ route("office.courts.sort", ["sort" => $sortColumns["name"]]) }}" class="{{ $sortColumns["class.name"] }}">
                                     {{ __("Nazwa") }}
@@ -47,29 +48,13 @@
                             <th>{{ __("Telefon") }}</th>
                             <th>{{ __("Adres e-mail") }}</th>
                             <th>{{ __("FAX") }}</th>
-                            <th style="width: 120px"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$courts->isEmpty())
                            @foreach($courts as $court)
                                <tr>
-                                    <td class="align-middle">
-                                        {{ $court->name }}
-                                    </td>
-                                    <td class="align-middle">
-                                        {!! \App\Libraries\Helper::getAddress($court->street, '', '', $court->zip, $court->city, "<br/>") !!}
-                                    </td>
-                                    <td class="align-middle">
-                                        {{ $court->phone }}
-                                    </td>
-                                    <td class="align-middle">
-                                        {{ $court->email }}
-                                    </td>
-                                    <td class="align-middle">
-                                        {{ $court->fax }}
-                                    </td>
-                                    <td class="align-middle text-end">
+                                    <td class="align-middle text-start">
                                         <a href="{{ route("office.court.show", $court->id) }}" class="btn btn-sm btn-primary">
                                             <i class="bi-search"></i>
                                         </a>
@@ -100,6 +85,21 @@
                                            </div>
                                         @endif
                                    </td>
+                                    <td class="align-middle">
+                                        {{ $court->name }}
+                                    </td>
+                                    <td class="align-middle">
+                                        {!! \App\Libraries\Helper::getAddress($court->street, '', '', $court->zip, $court->city, "<br/>") !!}
+                                    </td>
+                                    <td class="align-middle">
+                                        {{ $court->phone }}
+                                    </td>
+                                    <td class="align-middle">
+                                        {{ $court->email }}
+                                    </td>
+                                    <td class="align-middle">
+                                        {{ $court->fax }}
+                                    </td>
                                </tr>
                            @endforeach
                        @else

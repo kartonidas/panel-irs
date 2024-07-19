@@ -103,6 +103,7 @@ class CaseRegisterClaimController extends AjaxExportControllerAbstract
                 throw new Exception(__("Roszczenie nie istnieje"));
             
             $claim->amount = $validated["amount"];
+            $claim->currency = $validated["currency"] ?? "PLN";
             $claim->date = $validated["date"];
             $claim->due_date = $validated["due_date"];
             $claim->mark = $validated["mark"];
@@ -114,6 +115,7 @@ class CaseRegisterClaimController extends AjaxExportControllerAbstract
             $claim = new CaseRegisterClaim;
             $claim->case_registry_id = $case->id;
             $claim->amount = $validated["amount"];
+            $claim->currency = $validated["currency"] ?? "PLN";
             $claim->date = $validated["date"];
             $claim->due_date = $validated["due_date"];
             $claim->mark = $validated["mark"];

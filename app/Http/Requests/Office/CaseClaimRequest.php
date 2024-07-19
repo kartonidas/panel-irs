@@ -3,6 +3,9 @@
 namespace App\Http\Requests\Office;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+use App\Models\Currency;
 
 class CaseClaimRequest extends FormRequest
 {
@@ -19,6 +22,7 @@ class CaseClaimRequest extends FormRequest
             "due_date" => ["required", "date_format:Y-m-d"],
             "mark" => ["required", "max:200"],
             "description" => ["sometimes", "max:5000"],
+            "currency" => ["sometimes", Rule::in(Currency::getAllowedCurrencies())],
             "id" => ["nullable", "integer"],
         ];
         
@@ -38,6 +42,7 @@ class CaseClaimRequest extends FormRequest
             "mark.max" => __("Maksymalna długość w polu oznaczenie roszczenia to :max znaków"),
             "description.max" => __("Maksymalna długość w polu opis to :max znaków"),
             "id.integer" => __("Nieprawidłowy identyfikator roszczenia"),
+            "currency.in" => __("Nieprawidłowa waluta"),
         ];
     }
 }

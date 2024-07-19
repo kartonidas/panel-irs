@@ -66,9 +66,9 @@ Modal = {
                 {
                     var fieldObj = null;
                     if(Array.isArray(defaultValues[i]))
-                        fieldObj = $("FORM", target).find("*[name='[" + i + "][]']");
+                        fieldObj = $("FORM", target).find("*[name='" + i + "[]']");
                     else
-                        fieldObj = $("FORM", target).find("*[name='[" + i + "]']");
+                        fieldObj = $("FORM", target).find("*[name='" + i + "']");
 
                     if(!fieldObj) continue;
 
@@ -78,7 +78,7 @@ Modal = {
                         if(Array.isArray(defaultValues[i]))
                         {
                             for(j in defaultValues[i])
-                                $("FORM", target).find("*[name='[" + v + "][]'][value='"+defaultValues[i][j]+"']").prop("checked", true);
+                                $("FORM", target).find("*[name='" + v + "[]'][value='"+defaultValues[i][j]+"']").prop("checked", true);
                         }
                         else
                             fieldObj.prop("checked", true);

@@ -21,6 +21,7 @@ use App\Models\CaseRegisterHistory;
 use App\Models\CaseRegisterPayment;
 use App\Models\CaseRegisterSchedule;
 use App\Models\Court;
+use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Dictionary;
 use App\Models\OfficeUser;
@@ -114,7 +115,7 @@ class CaseRegisterController extends Controller
         $case->insolvency = $validated["insolvency"] ?? 0;
         $case->completed = $validated["completed"] ?? 0;
         $case->baliff = $validated["baliff"] ?? "";
-        $case->court_id = $validated["court_id"] ?? "";
+        $case->court_id = $validated["court_id"] ?? null;
         $case->save();
         
         Helper::setMessage("office:cases", __("Sprawa została dodana"));
@@ -173,7 +174,7 @@ class CaseRegisterController extends Controller
         $case->insolvency = $validated["insolvency"] ?? 0;
         $case->completed = $validated["completed"] ?? 0;
         $case->baliff = $validated["baliff"] ?? "";
-        $case->court_id = $validated["court_id"] ?? "";
+        $case->court_id = $validated["court_id"] ?? null;
         $case->save();
         
         Helper::setMessage("office:cases", __("Sprawa została zaktualizowana"));
@@ -209,8 +210,23 @@ class CaseRegisterController extends Controller
                 "caseStatuses" => Dictionary::getByType("case_status"),
                 "caseModes" => Dictionary::getByType("case_mode"),
                 "caseExecutionStatuses" => Dictionary::getByType("case_execution_status"),
-            ]
+            ],
+            "currencies" => Currency::getAllowedCurrencies(),
         ];
         return view("office.case-register.show", $vData);
+    }
+    
+    public function caseDelete(Request $request, $id)
+    {
+        $case = CaseRegistry::find($id);
+        if(!$case)
+            return redirect()->route("office.case_register")->withErrors(["msg" => __("Sprawa nie istnieje")]);
+        
+        OfficeUser::checkCaseAccess($case);
+        
+        $case->delete();
+        
+        Helper::setMessage("office:cases", __("Sprawa została usunięta"));
+        return redirect()->route("office.case_register");
     }
 }

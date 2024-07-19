@@ -46,6 +46,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th style="width: 120px"></th>
                             <th>
                                 <a href="{{ route("office.users.sort", ["sort" => $sortColumns["email"]]) }}" class="{{ $sortColumns["class.email"] }}">
                                     {{ __("Adres e-mail") }}
@@ -66,36 +67,13 @@
                                     {{ __("Zablokowane") }}
                                 </a>
                             </th>
-                            <th style="width: 120px"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$users->isEmpty())
                            @foreach($users as $user)
                                <tr>
-                                    <td class="align-middle">
-                                        {{ $user->email }}
-                                        <div class="text-muted">
-                                            <small>{{ $permissions[$user->office_permission_id] ?? "" }}</small>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">{{ $user->name }}</td>
-                                    <td class="align-middle text-center">
-                                        @if($user->active)
-                                            {{ __("Tak") }}
-                                        @else
-                                            {{ __("Nie") }}
-                                        @endif
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        @if($user->block)
-                                            <span class="text-danger fw-bolder">{{ __("Tak") }}</span>
-                                            <div class="text-muted lh-1" style="white-space: normal">
-                                                <small>{{ \App\Libraries\Data::getBlockReasons()[$user->block_reason] ?? $user->block_reason }}</small>
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td class="align-middle text-end">
+                                    <td class="align-middle text-start">
                                         @if(\App\Models\OfficeUser::checkAccess("users:update", false))
                                             @if($user->block)
                                                 <span title="{{ __("Odblokuj konto") }}" data-bs-toggle="tooltip" data-bs-placement="top">
@@ -181,6 +159,28 @@
                                            </div>
                                         @endif
                                    </td>
+                                    <td class="align-middle">
+                                        {{ $user->email }}
+                                        <div class="text-muted">
+                                            <small>{{ $permissions[$user->office_permission_id] ?? "" }}</small>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">{{ $user->name }}</td>
+                                    <td class="align-middle text-center">
+                                        @if($user->active)
+                                            {{ __("Tak") }}
+                                        @else
+                                            {{ __("Nie") }}
+                                        @endif
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        @if($user->block)
+                                            <span class="text-danger fw-bolder">{{ __("Tak") }}</span>
+                                            <div class="text-muted lh-1" style="white-space: normal">
+                                                <small>{{ \App\Libraries\Data::getBlockReasons()[$user->block_reason] ?? $user->block_reason }}</small>
+                                            </div>
+                                        @endif
+                                    </td>
                                </tr>
                            @endforeach
                        @else

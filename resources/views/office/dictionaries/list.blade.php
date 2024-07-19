@@ -39,18 +39,16 @@
                 <table class="table table-striped">
                     <thead class="table-light">
                         <tr>
+                            <th style="width: 120px"></th>
                             <th style="width: 200px">{{ __("Typ") }}</th>
                             <th>{{ __("Wartość") }}</th>
-                            <th style="width: 120px"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$dictionaries->isEmpty())
                             @foreach($dictionaries as $dictionary)
                                 <tr>
-                                    <td class="align-middle">{{ $dictionary->getTypeLabel() }}</td>
-                                    <td class="align-middle">{{ $dictionary->value }}</td>
-                                    <td class="align-middle text-end">
+                                    <td class="align-middle text-start">
                                         <a href="{{ route("office.dictionary.update", $dictionary->id) }}" class="btn btn-sm btn-primary btn-icon @if(!\App\Models\OfficeUser::checkAccess("dictionaries:update", false)){{ "disabled" }}@endif" title="Edycja" data-bs-toggle="tooltip">
                                             <i class="bi bi-pencil"></i>
                                         </a>
@@ -87,6 +85,8 @@
                                             </a>
                                        @endif
                                     </td>
+                                    <td class="align-middle">{{ $dictionary->getTypeLabel() }}</td>
+                                    <td class="align-middle">{{ $dictionary->value }}</td>
                                 </tr>
                             @endforeach
                         @else

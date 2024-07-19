@@ -107,6 +107,7 @@ class CaseRegisterPaymentController extends AjaxExportControllerAbstract
             
             $payment->date = $validated["date"];
             $payment->amount = $validated["amount"];
+            $payment->currency = $validated["currency"] ?? "PLN";
             $payment->save();
         }
         else
@@ -115,6 +116,7 @@ class CaseRegisterPaymentController extends AjaxExportControllerAbstract
             $payment->case_registry_id = $case->id;
             $payment->date = $validated["date"];
             $payment->amount = $validated["amount"];
+            $payment->currency = $validated["currency"] ?? "PLN";
             $payment->save();
         }
         

@@ -44,6 +44,13 @@
                     </a>
                 </li>
             @endif
+            @if(\App\Models\OfficeUser::checkAccess("settings:update", false))
+                <li class="nav-item">
+                    <a href="{{ route("office.settings") }}" class="nav-link @if(($activeMenuItem ?? "") == "settings"){{ "active" }}@endif"> <i class="nav-icon bi bi-gear"></i>
+                        <p>{{ __("Ustawienia") }}</p>
+                    </a>
+                </li>
+            @endif
         @endif
         
         <li class="nav-item">

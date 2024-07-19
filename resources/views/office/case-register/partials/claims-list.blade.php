@@ -1,6 +1,6 @@
 <div class="p-3 border-start border-bottom border-end">
     <div class="text-end mb-2">
-        <button type="button" class="btn btn-primary btn-sm open-modal" data-modal="#claimModal">{{ __("Dodaj roszczenie") }}</button>
+        <button type="button" class="btn btn-primary btn-sm open-modal" data-modal="#claimModal" data-default-values='{!! json_encode(["currency" => "PLN"]) !!}'>{{ __("Dodaj roszczenie") }}</button>
     </div>
     
     <form id="claimTableFilter" class="mt-4">
@@ -23,7 +23,7 @@
             <table class="table table-stripped table-hover" id="case-claims">
                 <thead>
                     <tr>
-                        <th style="width: 150px;" class="sortable" data-field="amount">{{ __("Roszczenie") }}</th>
+                        <th style="width: 150px;" class="sortable" data-field="amount_pln">{{ __("Roszczenie") }}</th>
                         <th style="width: 150px;" class="text-center sortable" data-field="date">{{ __("Data wystawienia") }}</th>
                         <th style="width: 150px;" class="text-center sortable sort-active sort-desc" data-field="due_date">{{ __("Termin wymagalności") }}</th>
                         <th style="width: 150px;" class="sortable" data-field="mark">{{ __("Oznaczenie roszczenia") }}</th>
@@ -68,8 +68,18 @@
                             <input type="number" name="amount" id="formClaimAmount" step="0.01" min="0.01" class="form-control" data-validate="required">
                             <small class="input-error-info"></small>
                         </div>
+                        
+                        <div class="col-2">
+                            <label for="formClaimAmount" class="form-label">{{ __("Waluta") }}*</label>
+                            <select id="formClaimAmount" class="form-select" name="currency" data-validate="required">
+                                @foreach($currencies as $currency)
+                                    <option value="{{ $currency }}">{{ $currency }}</option>
+                                @endforeach
+                            </select>
+                            <small class="input-error-info"></small>
+                        </div>
                             
-                        <div class="col-8">
+                        <div class="col-6">
                             <label for="formClaimMark" class="form-label">{{ __("Oznaczenie roszczenia") }}*</label>
                             <input type="text" name="mark" id="formClaimMark" class="form-control" data-validate="required">
                             <small class="input-error-info"></small>

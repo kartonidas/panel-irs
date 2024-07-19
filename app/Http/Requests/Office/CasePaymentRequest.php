@@ -3,6 +3,9 @@
 namespace App\Http\Requests\Office;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+use App\Models\Currency;
 
 class CasePaymentRequest extends FormRequest
 {
@@ -16,6 +19,7 @@ class CasePaymentRequest extends FormRequest
         $rules = [
             "date" => ["required", "date_format:Y-m-d"],
             "amount" => ["required", "numeric", "min:0.01"],
+            "currency" => ["sometimes", Rule::in(Currency::getAllowedCurrencies())],
             "id" => ["nullable", "integer"],
         ];
         
@@ -30,6 +34,7 @@ class CasePaymentRequest extends FormRequest
             "amount.required" => __("Uzupełnij kwotę wpłaty"),
             "amount.numeric" => __("Nieprawidłowa wartość w polu kwota wpłaty"),
             "amount.min" => __("Minimalna wartość w polu kwota wpłaty to :min"),
+            "currency.in" => __("Nieprawidłowa waluta"),
         ];
     }
 }
